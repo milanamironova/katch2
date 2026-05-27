@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFEEED">
+<title>Katch — Discover the hidden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+
+:root {
+  --primary: #CB0D63;
+  --accent: #FF7776;
+  --bg: #FFEEED;
+  --secondary: #565C6A;
+  --white: #ffffff;
+  --card-shadow: 0 2px 16px rgba(203,13,99,0.07);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ── */
+.app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* ── STATUS BAR ── */
+.status-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  flex-shrink: 0;
+}
+.status-bar .time { font-size: 15px; font-weight: 600; }
+.status-bar .icons { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+
+/* ── HEADER ── */
+.header {
+  padding: 4px 20px 14px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid rgba(86,92,106,0.2);
+}
+.header-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; }
+.logo { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700; color: var(--primary); letter-spacing: -1px; line-height: 1; }
+.tagline { font-size: 11px; color: var(--secondary); letter-spacing: 0.5px; }
+.header-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
+
+.upload-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--white);
+  border-radius: 14px;
+  padding: 10px 14px;
+  border: 0.5px solid rgba(203,13,99,0.25);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.upload-pill:active { background: #fff5f8; }
+.upload-pill svg { color: var(--primary); flex-shrink: 0; }
+.upload-pill-text { flex: 1; }
+.upload-pill-text .main { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+.upload-pill-text .sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
+.earn-badge { background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+
+/* ── SCROLLABLE FEED ── */
+.feed {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.feed::-webkit-scrollbar { display: none; }
+
+/* ── PAGE SYSTEM ── */
+.page { display: none; padding-bottom: 16px; }
+.page.active { display: block; }
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--secondary);
+  padding: 16px 20px 10px;
+}
+
+/* ── SWIPE CARD ── */
+.swipe-card {
+  margin: 8px 16px 4px;
+  background: var(--white);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 0.5px solid rgba(203,13,99,0.1);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.swipe-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+.swipe-card-body { padding: 14px 16px; }
+.swipe-card-body .match-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1D9E75;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.match-dot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
+.swipe-card-body h3 { font-size: 17px; font-weight: 600; margin-bottom: 3px; }
+.swipe-card-body .brand { font-size: 12px; color: var(--secondary); margin-bottom: 12px; }
+.swipe-actions { display: flex; gap: 10px; }
+.btn-reject {
+  flex: 1; padding: 11px; border: 0.5px solid rgba(86,92,106,0.3);
+  border-radius: 14px; background: transparent; font-size: 13px;
+  font-weight: 500; color: var(--secondary); cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.btn-reject:active { background: #f5f5f5; }
+.btn-accept {
+  flex: 2; padding: 11px; border: none; border-radius: 14px;
+  background: var(--primary); font-size: 13px; font-weight: 600;
+  color: white; cursor: pointer; font-family: inherit;
+  transition: opacity 0.15s;
+}
+.btn-accept:active { opacity: 0.85; }
+
+/* ── HORIZONTAL CARD ROW ── */
+.cards-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0 20px 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.cards-row::-webkit-scrollbar { display: none; }
+
+.card {
+  flex: 0 0 155px;
+  scroll-snap-align: start;
+  background: var(--white);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 0.5px solid rgba(86,92,106,0.1);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.card:active { transform: scale(0.97); }
+.card img { width: 100%; height: 115px; object-fit: cover; display: block; }
+.card-body { padding: 10px 12px 12px; }
+.card-body h3 { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 3px; }
+.card-body .brand-name { font-size: 11px; color: var(--secondary); }
+.card-body .price { font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 6px; }
+.card-body .discount-tag {
+  display: inline-block; margin-top: 4px;
+  font-size: 10px; background: #FFF0F6; color: var(--primary);
+  padding: 2px 7px; border-radius: 8px; font-weight: 500;
+}
+
+/* ── WIDE CARDS ── */
+.wide-card {
+  margin: 0 16px 10px;
+  background: var(--white);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 0.5px solid rgba(86,92,106,0.1);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.wide-card:active { transform: scale(0.98); }
+.wide-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; flex-shrink: 0; }
+.wide-card-body h3 { font-size: 14px; font-weight: 600; }
+.wide-card-body .meta { font-size: 11px; color: var(--secondary); margin-top: 3px; line-height: 1.4; }
+.wide-card-body .match-tag {
+  display: flex; align-items: center; gap: 4px; margin-top: 6px;
+  font-size: 11px; color: #0F6E56; font-weight: 600;
+}
+
+/* ── BOTTOM NAV ── */
+.nav {
+  height: 62px;
+  background: var(--bg);
+  border-top: 0.5px solid rgba(86,92,106,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 14px;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+.nav-btn:active { background: rgba(203,13,99,0.06); }
+.nav-icon {
+  font-size: 22px; color: var(--secondary);
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-btn.active .nav-icon { color: var(--primary); }
+.nav-label { font-size: 10px; color: var(--secondary); font-weight: 500; }
+.nav-btn.active .nav-label { color: var(--primary); font-weight: 600; }
+
+/* ── BOTTOM SHEET OVERLAY ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+  pointer-events: none;
+  transition: background 0.25s;
+  padding-bottom: var(--safe-bottom);
+}
+.overlay.show { background: rgba(0,0,0,0.45); pointer-events: all; }
+.sheet {
+  width: 100%;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  padding: 8px 20px 24px;
+  max-height: 88vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.sheet::-webkit-scrollbar { display: none; }
+.overlay.show .sheet { transform: translateY(0); }
+.sheet-handle { width: 36px; height: 4px; background: rgba(86,92,106,0.25); border-radius: 2px; margin: 8px auto 18px; }
+.sheet img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 14px; display: block; }
+.sheet h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+.sheet .sheet-brand { font-size: 13px; color: var(--secondary); margin-bottom: 10px; }
+.sheet .sheet-desc { font-size: 13px; color: var(--secondary); line-height: 1.6; margin-bottom: 14px; }
+.price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.price-row .price { font-size: 26px; font-weight: 700; color: var(--primary); font-family: 'Barlow Condensed', sans-serif; }
+.price-row .original { font-size: 14px; color: var(--secondary); text-decoration: line-through; }
+.price-row .save-pill { font-size: 11px; background: #FFF0F6; color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.btn-buy {
+  width: 100%; padding: 16px; border: none; border-radius: 16px;
+  background: var(--primary); font-size: 16px; font-weight: 600;
+  color: white; cursor: pointer; font-family: inherit;
+  transition: opacity 0.15s;
+}
+.btn-buy:active { opacity: 0.85; }
+.btn-close-sheet {
+  width: 100%; padding: 13px; border: 0.5px solid rgba(86,92,106,0.25);
+  border-radius: 14px; background: transparent; font-size: 14px;
+  color: var(--secondary); cursor: pointer; font-family: inherit; margin-top: 10px;
+}
+
+/* ── SAVED / MOODBOARD PAGE ── */
+.moodboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin: 0 16px 16px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.moodboard-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; transition: opacity 0.15s; }
+.moodboard-grid img:active { opacity: 0.8; }
+
+.taste-section { padding: 0 20px 20px; }
+.taste-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.taste-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag {
+  font-size: 12px; padding: 6px 13px; border-radius: 20px;
+  background: #FFF0F6; color: var(--primary);
+  border: 0.5px solid rgba(203,13,99,0.2); font-weight: 500;
+}
+
+/* ── UPLOAD PAGE ── */
+.upload-hero {
+  margin: 16px 16px 12px;
+  border: 1.5px dashed rgba(203,13,99,0.35);
+  border-radius: 20px;
+  padding: 36px 20px;
+  text-align: center;
+  background: rgba(203,13,99,0.02);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.upload-hero:active { background: rgba(203,13,99,0.05); }
+.upload-icon-wrap {
+  width: 60px; height: 60px; border-radius: 20px;
+  background: #FFF0F6; display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 14px;
+}
+.upload-hero h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.upload-hero p { font-size: 13px; color: var(--secondary); line-height: 1.5; }
+.upload-hero input { display: none; }
+
+.info-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: 18px;
+  padding: 16px;
+  border: 0.5px solid rgba(86,92,106,0.1);
+  box-shadow: var(--card-shadow);
+}
+.info-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.info-card .step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.info-card .step:last-child { margin-bottom: 0; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 8px; background: var(--primary);
+  color: white; font-size: 12px; font-weight: 700; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.step-text { font-size: 13px; color: var(--secondary); line-height: 1.4; }
+.step-text strong { color: #1a1a1a; font-weight: 600; }
+
+.data-card {
+  margin: 0 16px 12px;
+  background: #FFF0F6;
+  border-radius: 18px;
+  padding: 16px;
+  border: 0.5px solid rgba(203,13,99,0.15);
+}
+.data-card h4 { font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 12px; }
+.data-stats { display: flex; gap: 0; }
+.data-stat { flex: 1; text-align: center; }
+.data-stat .num { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--primary); }
+.data-stat .lbl { font-size: 10px; color: var(--secondary); margin-top: 2px; }
+.data-divider { width: 0.5px; background: rgba(203,13,99,0.2); margin: 4px 0; }
+
+/* ── PROFILE PAGE ── */
+.profile-hero {
+  padding: 20px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 0.5px solid rgba(86,92,106,0.1);
+  margin-bottom: 4px;
+}
+.profile-avatar {
+  width: 64px; height: 64px; border-radius: 22px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.profile-info h2 { font-size: 20px; font-weight: 600; }
+.profile-info p { font-size: 12px; color: var(--secondary); margin-top: 3px; }
+.profile-info .member { font-size: 11px; color: var(--secondary); margin-top: 4px; }
+
+.stats-row { display: flex; gap: 10px; padding: 12px 16px; }
+.stat-box {
+  flex: 1; background: var(--white); border-radius: 14px;
+  padding: 12px 10px; text-align: center;
+  border: 0.5px solid rgba(86,92,106,0.1); box-shadow: var(--card-shadow);
+}
+.stat-box .num { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); }
+.stat-box .lbl { font-size: 10px; color: var(--secondary); margin-top: 2px; }
+
+.settings-card {
+  margin: 0 16px 12px;
+  background: var(--white);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 0.5px solid rgba(86,92,106,0.1);
+  box-shadow: var(--card-shadow);
+}
+.settings-card h4 { font-size: 13px; font-weight: 600; padding: 14px 16px 10px; border-bottom: 0.5px solid rgba(86,92,106,0.1); }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border-bottom: 0.5px solid rgba(86,92,106,0.07);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 13px; color: #1a1a1a; }
+.setting-value { font-size: 13px; font-weight: 600; }
+.on { color: #1D9E75; }
+.del { color: var(--primary); cursor: pointer; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #1a1a1a; color: white; font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 20px; opacity: 0;
+  transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 200;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE for removed swipe card ── */
+.empty-state {
+  margin: 8px 16px 4px;
+  background: var(--white);
+  border-radius: 22px;
+  padding: 32px 20px;
+  text-align: center;
+  border: 0.5px dashed rgba(203,13,99,0.2);
+}
+.empty-state p { font-size: 13px; color: var(--secondary); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <span class="icons">●●● 100%</span>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="logo">Katch</div>
+        <div class="tagline">Discover the hidden</div>
+      </div>
+      <div class="header-avatar" onclick="switchTab('profile')">M</div>
+    </div>
+    <div class="upload-pill" onclick="switchTab('upload')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" color="var(--primary)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="upload-pill-text">
+        <div class="main">Drop your screenshots</div>
+        <div class="sub">Earn discounts from your taste</div>
+      </div>
+      <span class="earn-badge">+ €</span>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div class="feed" id="feed">
+
+    <!-- DISCOVER PAGE -->
+    <div class="page active" id="page-discover">
+
+      <div class="section-label">Matched for you</div>
+
+      <div class="swipe-card" id="swipe1">
+        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80" alt="Camel coat">
+        <div class="swipe-card-body">
+          <div class="match-label"><span class="match-dot"></span>98% match with your moodboard</div>
+          <h3>Camel Structured Coat</h3>
+          <p class="brand">Maison Lemaire · €420 → €294 with your data</p>
+          <div class="swipe-actions">
+            <button class="btn-reject" onclick="rejectCard('swipe1')">✕ Not for me</button>
+            <button class="btn-accept" onclick="acceptCard('swipe1', 'coat')">✓ I love this</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="swipe-empty" style="display:none">
+        <p>You've reviewed all your matches.<br>Upload more screenshots for new ones ✦</p>
+      </div>
+
+      <div class="section-label">Fashion</div>
+      <div class="cards-row">
+        <div class="card" onclick="openSheet('dress')">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" alt="Linen dress">
+          <div class="card-body">
+            <h3>Linen Wrap Dress</h3>
+            <div class="brand-name">Rouje Paris</div>
+            <div class="price">€132</div>
+            <div class="discount-tag">−30% your data</div>
+          </div>
+        </div>
+        <div class="card" onclick="openSheet('bag')">
+          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" alt="Leather tote">
+          <div class="card-body">
+            <h3>Leather Tote</h3>
+            <div class="brand-name">Sandro</div>
+            <div class="price">€184</div>
+            <div class="discount-tag">−25% your data</div>
+          </div>
+        </div>
+        <div class="card" onclick="openSheet('sneaker')">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="Sneakers">
+          <div class="card-body">
+            <h3>Minimalist Sneaker</h3>
+            <div class="brand-name">Veja</div>
+            <div class="price">€96</div>
+            <div class="discount-tag">−20% your data</div>
+          </div>
+        </div>
+        <div class="card" onclick="openSheet('jacket')">
+          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&q=80" alt="Jacket">
+          <div class="card-body">
+            <h3>Overshirt Jacket</h3>
+            <div class="brand-name">A.P.C.</div>
+            <div class="price">€210</div>
+            <div class="discount-tag">−15% your data</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Art & Culture</div>
+      <div class="cards-row">
+        <div class="card" onclick="openSheet('print')">
+          <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&q=80" alt="Art print">
+          <div class="card-body">
+            <h3>Abstract Print</h3>
+            <div class="brand-name">Galerie Joseph</div>
+            <div class="price">€95</div>
+            <div class="discount-tag">−15% your data</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&q=80" alt="Film">
+          <div class="card-body">
+            <h3>Chungking Express</h3>
+            <div class="brand-name">Film · Wong Kar-wai</div>
+            <div class="price">Watch free</div>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80" alt="Music">
+          <div class="card-body">
+            <h3>Your Taste Playlist</h3>
+            <div class="brand-name">Built from your saves</div>
+            <div class="price">Listen</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Nearby matches</div>
+      <div class="wide-card" onclick="openSheet('workshop')">
+        <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=200&q=80" alt="Ceramics">
+        <div class="wide-card-body">
+          <h3>Ceramics Workshop</h3>
+          <div class="meta">Atelier Laurette · Paris 11e<br>Saturday 14 June</div>
+          <div class="match-tag"><span class="match-dot"></span>94% match · 2h from you</div>
+        </div>
+      </div>
+      <div class="wide-card" onclick="openSheet('restaurant')">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&q=80" alt="Restaurant">
+        <div class="wide-card-body">
+          <h3>Septime</h3>
+          <div class="meta">Restaurant · Paris 11e<br>Natural wine · Seasonal menu</div>
+          <div class="match-tag"><span class="match-dot"></span>91% match · 1.2km away</div>
+        </div>
+      </div>
+      <div class="wide-card" onclick="openSheet('book')">
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=80" alt="Book">
+        <div class="wide-card-body">
+          <h3>Bresson on Bresson</h3>
+          <div class="meta">Photography · Phaidon Press<br>Matched your art saves</div>
+          <div class="match-tag"><span class="match-dot"></span>88% match</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVED PAGE -->
+    <div class="page" id="page-saved">
+      <div class="section-label">Your moodboard</div>
+      <div class="moodboard-grid">
+        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300&q=80" alt="s1">
+        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&q=80" alt="s2">
+        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80" alt="s3">
+        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=300&q=80" alt="s4">
+        <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=300&q=80" alt="s5">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80" alt="s6">
+        <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=300&q=80" alt="s7">
+        <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80" alt="s8">
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&q=80" alt="s9">
+      </div>
+      <div class="section-label">Your aesthetic DNA</div>
+      <div class="taste-section">
+        <div class="taste-tags">
+          <span class="tag">Earth tones</span>
+          <span class="tag">Structured silhouettes</span>
+          <span class="tag">Natural textures</span>
+          <span class="tag">Minimalist</span>
+          <span class="tag">French indie cinema</span>
+          <span class="tag">Ceramics</span>
+          <span class="tag">Natural wine</span>
+          <span class="tag">Brutalist warmth</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD PAGE -->
+    <div class="page" id="page-upload">
+      <label class="upload-hero" for="file-input">
+        <div class="upload-icon-wrap">
+          <svg width="28" height="28" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <h3>Upload your screenshots</h3>
+        <p>We only see what you choose to share.<br>Nothing is tracked in the background.</p>
+        <input type="file" id="file-input" accept="image/*" multiple onchange="handleUpload(this)">
+      </label>
+
+      <div class="data-card">
+        <h4>Your data this month</h4>
+        <div class="data-stats">
+          <div class="data-stat">
+            <div class="num">€8.40</div>
+            <div class="lbl">earned in discounts</div>
+          </div>
+          <div class="data-divider"></div>
+          <div class="data-stat">
+            <div class="num">23</div>
+            <div class="lbl">screenshots used</div>
+          </div>
+          <div class="data-divider"></div>
+          <div class="data-stat">
+            <div class="num">4</div>
+            <div class="lbl">matches made</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4>How it works</h4>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Upload</strong> screenshots of things you love — fashion, art, interiors, anything.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>We match</strong> your taste to brands that actually fit your aesthetic.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Brands pay</strong> to reach you — and you get 30% back as real discounts.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>You decide</strong> what to delete, share, or keep private. Always.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div class="page" id="page-profile">
+      <div class="profile-hero">
+        <div class="profile-avatar">M</div>
+        <div class="profile-info">
+          <h2>Maya</h2>
+          <p>Paris, France</p>
+          <p class="member">Member since January 2025</p>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="num">€42</div>
+          <div class="lbl">Total saved</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">86</div>
+          <div class="lbl">Screenshots</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">3</div>
+          <div class="lbl">Purchases</div>
+        </div>
+      </div>
+
+      <div class="section-label">Taste profile</div>
+      <div class="taste-section">
+        <div class="taste-tags">
+          <span class="tag">Earth tones</span>
+          <span class="tag">Structured</span>
+          <span class="tag">Ceramics</span>
+          <span class="tag">Indie film</span>
+          <span class="tag">Natural wine</span>
+          <span class="tag">Minimalist</span>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h4>Privacy settings</h4>
+        <div class="setting-row">
+          <span class="setting-label">Share screenshot data</span>
+          <span class="setting-value on">ON</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Receive brand matches</span>
+          <span class="setting-value on">ON</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Location-based matches</span>
+          <span class="setting-value on">ON</span>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Delete all my data</span>
+          <span class="setting-value del" onclick="showToast('All data deleted. You can re-upload anytime.')">Delete</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /feed -->
+
+  <!-- Bottom Nav -->
+  <nav class="nav">
+    <button class="nav-btn active" id="nav-discover" onclick="switchTab('discover')">
+      <div class="nav-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      </div>
+      <span class="nav-label">Discover</span>
+    </button>
+    <button class="nav-btn" id="nav-saved" onclick="switchTab('saved')">
+      <div class="nav-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <span class="nav-label">Saved</span>
+    </button>
+    <button class="nav-btn" id="nav-upload" onclick="switchTab('upload')">
+      <div class="nav-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </div>
+      <span class="nav-label">Upload</span>
+    </button>
+    <button class="nav-btn" id="nav-profile" onclick="switchTab('profile')">
+      <div class="nav-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span class="nav-label">Profile</span>
+    </button>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- Bottom Sheet -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const sheetData = {
+  coat: {
+    img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80',
+    title: 'Camel Structured Coat',
+    brand: 'Maison Lemaire',
+    desc: 'Matched from 3 of your screenshots. You have been saving structured earth-tone outerwear for 6 weeks — this is the best available match right now.',
+    price: '€294', original: '€420', save: 'Save €126'
+  },
+  dress: {
+    img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80',
+    title: 'Linen Wrap Dress',
+    brand: 'Rouje Paris',
+    desc: 'Matched from 5 of your screenshots. Relaxed linen, wrap silhouette, natural tones — your most saved aesthetic this season.',
+    price: '€132', original: '€189', save: 'Save €57'
+  },
+  bag: {
+    img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=700&q=80',
+    title: 'Leather Tote',
+    brand: 'Sandro',
+    desc: 'Matched from 4 of your screenshots. Structured, minimal, exactly the silhouette you keep saving.',
+    price: '€184', original: '€245', save: 'Save €61'
+  },
+  sneaker: {
+    img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80',
+    title: 'Minimalist Sneaker',
+    brand: 'Veja',
+    desc: 'Clean white, ethical production, minimal branding. Matches 7 of your saved references.',
+    price: '€96', original: '€120', save: 'Save €24'
+  },
+  jacket: {
+    img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=700&q=80',
+    title: 'Overshirt Jacket',
+    brand: 'A.P.C.',
+    desc: 'Structured, earthy, versatile. Appeared in 3 of your most recent uploads.',
+    price: '€179', original: '€210', save: 'Save €31'
+  },
+  print: {
+    img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=80',
+    title: 'Abstract Print — No. 7',
+    brand: 'Galerie Joseph · Paris 3e',
+    desc: 'Limited edition. Matched from your art saves — same palette, same compositional energy.',
+    price: '€81', original: '€95', save: 'Save €14'
+  },
+  workshop: {
+    img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=700&q=80',
+    title: 'Hand-building Ceramics Workshop',
+    brand: 'Atelier Laurette · Paris 11e',
+    desc: 'You have saved 12 ceramics references in the last month. This Saturday workshop is a 94% match with your aesthetic profile.',
+    price: '€45', original: '€65', save: 'Save €20'
+  },
+  restaurant: {
+    img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80',
+    title: 'Septime',
+    brand: 'Restaurant · Paris 11e',
+    desc: 'Natural wine, seasonal menu, warm lighting. Everything in your saved references points here.',
+    price: 'Book a table', original: null, save: null
+  },
+  book: {
+    img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=700&q=80',
+    title: 'Bresson on Bresson',
+    brand: 'Phaidon Press',
+    desc: 'Interviews and photographs. Matched from your saved art and film references — same visual sensibility.',
+    price: '€28', original: '€35', save: 'Save €7'
+  }
+};
+
+function openSheet(key) {
+  const d = sheetData[key];
+  if (!d) return;
+  const priceBlock = d.original
+    ? `<div class="price-row">
+        <span class="price">${d.price}</span>
+        <span class="original">${d.original}</span>
+        <span class="save-pill">${d.save}</span>
+       </div>
+       <button class="btn-buy" onclick="handleBuy('${key}')">Buy now · Discount applied</button>`
+    : `<button class="btn-buy" onclick="handleBuy('${key}')">${d.price}</button>`;
+
+  document.getElementById('sheet-body').innerHTML = `
+    <img src="${d.img}" alt="${d.title}">
+    <h2>${d.title}</h2>
+    <p class="sheet-brand">${d.brand}</p>
+    <p class="sheet-desc">${d.desc}</p>
+    ${priceBlock}
+    <button class="btn-close-sheet" onclick="closeSheet()">Close</button>
+  `;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeSheet() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('overlay')) closeSheet();
+}
+
+function handleBuy(key) {
+  closeSheet();
+  showToast('Purchase started — discount applied ✓');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  document.getElementById('feed').scrollTop = 0;
+}
+
+function rejectCard(id) {
+  const el = document.getElementById(id);
+  el.style.transform = 'translateX(-110%) rotate(-8deg)';
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.style.display = 'none';
+    document.getElementById('swipe-empty').style.display = 'block';
+  }, 300);
+  showToast('Got it — we will not show you this again');
+}
+
+function acceptCard(id, key) {
+  const el = document.getElementById(id);
+  el.style.transform = 'translateX(110%) rotate(8deg)';
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.style.display = 'none';
+    document.getElementById('swipe-empty').style.display = 'block';
+    openSheet(key);
+  }, 300);
+}
+
+function handleUpload(input) {
+  if (input.files && input.files.length > 0) {
+    showToast(`${input.files.length} screenshot${input.files.length > 1 ? 's' : ''} uploaded — analysing your taste ✦`);
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Swipe gesture support for swipe card
+let startX = 0;
+document.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - startX;
+  const card = document.getElementById('swipe1');
+  if (!card || card.style.display === 'none') return;
+  if (diff < -80) rejectCard('swipe1');
+  else if (diff > 80) acceptCard('swipe1', 'coat');
+}, { passive: true });
+</script>
+</body>
+</html>
