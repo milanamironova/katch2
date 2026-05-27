@@ -32,7 +32,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── APP SHELL ── */
 .app {
   position: fixed;
   inset: 0;
@@ -43,7 +42,6 @@ html, body {
   padding-bottom: var(--safe-bottom);
 }
 
-/* ── STATUS BAR ── */
 .status-bar {
   height: 44px;
   display: flex;
@@ -55,14 +53,39 @@ html, body {
 .status-bar .time { font-size: 15px; font-weight: 600; }
 .status-bar .icons { display: flex; gap: 6px; align-items: center; font-size: 13px; }
 
-/* ── HEADER ── */
+/* ── BANNER NOTIFICATION ── */
+.banner {
+  margin: 0 14px 6px;
+  background: #1a1a1a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideDown 0.4s cubic-bezier(0.32,0.72,0,1);
+  flex-shrink: 0;
+}
+.banner-icon { font-size: 16px; flex-shrink: 0; }
+.banner-text { flex: 1; font-size: 12px; color: white; font-weight: 500; }
+.banner-text span { color: var(--accent); font-weight: 600; }
+.banner-close { color: rgba(255,255,255,0.6); font-size: 16px; cursor: pointer; padding: 2px; }
+@keyframes slideDown { from { opacity:0; transform: translateY(-8px); } to { opacity:1; transform: translateY(0); } }
+
 .header {
   padding: 4px 20px 14px;
   flex-shrink: 0;
   border-bottom: 0.5px solid rgba(86,92,106,0.2);
 }
 .header-top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; }
-.logo { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700; color: var(--primary); letter-spacing: -1px; line-height: 1; }
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #565C6A;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.logo .k-letter { color: #CB0D63; }
 .tagline { font-size: 11px; color: var(--secondary); letter-spacing: 0.5px; }
 .header-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
 
@@ -84,7 +107,6 @@ html, body {
 .upload-pill-text .sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
 .earn-badge { background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
 
-/* ── SCROLLABLE FEED ── */
 .feed {
   flex: 1;
   overflow-y: auto;
@@ -94,11 +116,9 @@ html, body {
 }
 .feed::-webkit-scrollbar { display: none; }
 
-/* ── PAGE SYSTEM ── */
 .page { display: none; padding-bottom: 16px; }
 .page.active { display: block; }
 
-/* ── SECTION LABELS ── */
 .section-label {
   font-size: 10px;
   font-weight: 600;
@@ -108,130 +128,81 @@ html, body {
   padding: 16px 20px 10px;
 }
 
-/* ── SWIPE CARD ── */
-.swipe-card {
-  margin: 8px 16px 4px;
-  background: var(--white);
-  border-radius: 22px;
+/* ── GALLERY (DISCOVER) ── */
+.gallery-wrap {
+  position: relative;
+  margin: 8px 0;
   overflow: hidden;
-  box-shadow: var(--card-shadow);
-  border: 0.5px solid rgba(203,13,99,0.1);
-  transition: transform 0.3s, opacity 0.3s;
+  touch-action: none;
+  user-select: none;
 }
-.swipe-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
-.swipe-card-body { padding: 14px 16px; }
-.swipe-card-body .match-label {
-  font-size: 11px;
+.gallery-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+.gallery-grid {
+  display: grid;
+  gap: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.gallery-cell {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.gallery-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+  transition: transform 0.1s;
+}
+.gallery-cell:active img { transform: scale(0.96); }
+.gallery-cell .cell-category {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  font-size: 9px;
   font-weight: 600;
-  color: #1D9E75;
+  letter-spacing: 0.5px;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.gallery-zoom-3 .cell-category { opacity: 1; }
+
+/* Zoom controls */
+.gallery-zoom-bar {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 6px;
-}
-.match-dot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
-.swipe-card-body h3 { font-size: 17px; font-weight: 600; margin-bottom: 3px; }
-.swipe-card-body .brand { font-size: 12px; color: var(--secondary); margin-bottom: 12px; }
-.swipe-actions { display: flex; gap: 10px; }
-.btn-reject {
-  flex: 1; padding: 11px; border: 0.5px solid rgba(86,92,106,0.3);
-  border-radius: 14px; background: transparent; font-size: 13px;
-  font-weight: 500; color: var(--secondary); cursor: pointer; font-family: inherit;
-  transition: background 0.15s;
-}
-.btn-reject:active { background: #f5f5f5; }
-.btn-accept {
-  flex: 2; padding: 11px; border: none; border-radius: 14px;
-  background: var(--primary); font-size: 13px; font-weight: 600;
-  color: white; cursor: pointer; font-family: inherit;
-  transition: opacity 0.15s;
-}
-.btn-accept:active { opacity: 0.85; }
-
-/* ── HORIZONTAL CARD ROW ── */
-.cards-row {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 0 20px 8px;
-  -webkit-overflow-scrolling: touch;
-}
-.cards-row::-webkit-scrollbar { display: none; }
-
-.card {
-  flex: 0 0 155px;
-  scroll-snap-align: start;
-  background: var(--white);
-  border-radius: 18px;
-  overflow: hidden;
-  border: 0.5px solid rgba(86,92,106,0.1);
-  box-shadow: var(--card-shadow);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.card:active { transform: scale(0.97); }
-.card img { width: 100%; height: 115px; object-fit: cover; display: block; }
-.card-body { padding: 10px 12px 12px; }
-.card-body h3 { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 3px; }
-.card-body .brand-name { font-size: 11px; color: var(--secondary); }
-.card-body .price { font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 6px; }
-.card-body .discount-tag {
-  display: inline-block; margin-top: 4px;
-  font-size: 10px; background: #FFF0F6; color: var(--primary);
-  padding: 2px 7px; border-radius: 8px; font-weight: 500;
-}
-
-/* ── WIDE CARDS ── */
-.wide-card {
-  margin: 0 16px 10px;
-  background: var(--white);
-  border-radius: 18px;
-  overflow: hidden;
-  border: 0.5px solid rgba(86,92,106,0.1);
-  box-shadow: var(--card-shadow);
-  display: flex;
+  justify-content: center;
   gap: 12px;
-  padding: 12px;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.15s;
+  padding: 8px 0 2px;
 }
-.wide-card:active { transform: scale(0.98); }
-.wide-card img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; flex-shrink: 0; }
-.wide-card-body h3 { font-size: 14px; font-weight: 600; }
-.wide-card-body .meta { font-size: 11px; color: var(--secondary); margin-top: 3px; line-height: 1.4; }
-.wide-card-body .match-tag {
-  display: flex; align-items: center; gap: 4px; margin-top: 6px;
-  font-size: 11px; color: #0F6E56; font-weight: 600;
-}
-
-/* ── BOTTOM NAV ── */
-.nav {
-  height: 62px;
-  background: var(--bg);
-  border-top: 0.5px solid rgba(86,92,106,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-shrink: 0;
-}
-.nav-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  background: none; border: none; cursor: pointer;
-  padding: 8px 16px; border-radius: 14px;
-  transition: background 0.15s;
-  font-family: inherit;
-}
-.nav-btn:active { background: rgba(203,13,99,0.06); }
-.nav-icon {
-  font-size: 22px; color: var(--secondary);
-  width: 24px; height: 24px;
+.zoom-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 0.5px solid rgba(86,92,106,0.2);
+  font-size: 18px;
+  color: var(--secondary);
   display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-weight: 300;
 }
-.nav-btn.active .nav-icon { color: var(--primary); }
-.nav-label { font-size: 10px; color: var(--secondary); font-weight: 500; }
-.nav-btn.active .nav-label { color: var(--primary); font-weight: 600; }
+.zoom-indicator {
+  font-size: 11px;
+  color: var(--secondary);
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
 
 /* ── BOTTOM SHEET OVERLAY ── */
 .overlay {
@@ -268,6 +239,42 @@ html, body {
 .price-row .price { font-size: 26px; font-weight: 700; color: var(--primary); font-family: 'Barlow Condensed', sans-serif; }
 .price-row .original { font-size: 14px; color: var(--secondary); text-decoration: line-through; }
 .price-row .save-pill { font-size: 11px; background: #FFF0F6; color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+
+/* Match actions in sheet */
+.match-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.match-btn-no {
+  flex: 1;
+  height: 44px;
+  border: 0.5px solid rgba(86,92,106,0.3);
+  border-radius: 14px;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  font-family: inherit;
+  color: var(--secondary);
+}
+.match-btn-no:active { background: #f5f5f5; }
+.match-btn-yes {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s;
+  font-family: inherit;
+  color: white;
+}
+.match-btn-yes:active { opacity: 0.85; }
+
 .btn-buy {
   width: 100%; padding: 16px; border: none; border-radius: 16px;
   background: var(--primary); font-size: 16px; font-weight: 600;
@@ -356,6 +363,42 @@ html, body {
 .data-stat .lbl { font-size: 10px; color: var(--secondary); margin-top: 2px; }
 .data-divider { width: 0.5px; background: rgba(203,13,99,0.2); margin: 4px 0; }
 
+/* ── UPLOAD CATEGORIES SECTION ── */
+.upload-cats-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--secondary);
+  padding: 16px 20px 10px;
+}
+.upload-cat-section { margin: 0 16px 16px; }
+.upload-cat-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.upload-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.upload-gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+.upload-gallery img:first-child { border-radius: 14px 0 0 14px; }
+.upload-gallery img:last-child { border-radius: 0 14px 14px 0; }
+
 /* ── PROFILE PAGE ── */
 .profile-hero {
   padding: 20px 20px 16px;
@@ -404,6 +447,67 @@ html, body {
 .on { color: #1D9E75; }
 .del { color: var(--primary); cursor: pointer; }
 
+/* ── ELIGIBLE OFFERS SECTION ── */
+.offers-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 16px 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.offers-scroll::-webkit-scrollbar { display: none; }
+.offer-card {
+  flex: 0 0 200px;
+  background: var(--white);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 0.5px solid rgba(203,13,99,0.15);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.offer-card:active { transform: scale(0.97); }
+.offer-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.offer-card-body { padding: 10px 12px 12px; }
+.offer-card-body .offer-brand { font-size: 11px; color: var(--secondary); margin-bottom: 2px; }
+.offer-card-body .offer-title { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
+.offer-pill {
+  display: inline-block;
+  background: #FFF0F6;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 10px;
+}
+
+/* ── BOTTOM NAV ── */
+.nav {
+  height: 62px;
+  background: var(--bg);
+  border-top: 0.5px solid rgba(86,92,106,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  padding: 8px 16px; border-radius: 14px;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+.nav-btn:active { background: rgba(203,13,99,0.06); }
+.nav-icon {
+  font-size: 22px; color: var(--secondary);
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-btn.active .nav-icon { color: var(--primary); }
+.nav-label { font-size: 10px; color: var(--secondary); font-weight: 500; }
+.nav-btn.active .nav-label { color: var(--primary); font-weight: 600; }
+
 /* ── TOAST ── */
 .toast {
   position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -413,17 +517,6 @@ html, body {
   white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ── EMPTY STATE for removed swipe card ── */
-.empty-state {
-  margin: 8px 16px 4px;
-  background: var(--white);
-  border-radius: 22px;
-  padding: 32px 20px;
-  text-align: center;
-  border: 0.5px dashed rgba(203,13,99,0.2);
-}
-.empty-state p { font-size: 13px; color: var(--secondary); }
 </style>
 </head>
 <body>
@@ -435,11 +528,18 @@ html, body {
     <span class="icons">●●● 100%</span>
   </div>
 
+  <!-- Banner notification -->
+  <div class="banner" id="banner">
+    <span class="banner-icon">💰</span>
+    <span class="banner-text">Data dividend this week — <span>4 brands bid for your aesthetic</span></span>
+    <span class="banner-close" onclick="document.getElementById('banner').style.display='none'">×</span>
+  </div>
+
   <!-- Header -->
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="logo">Katch</div>
+        <div class="logo"><span class="k-letter">K</span>atch</div>
         <div class="tagline">Discover the hidden</div>
       </div>
       <div class="header-avatar" onclick="switchTab('profile')">M</div>
@@ -459,118 +559,17 @@ html, body {
 
     <!-- DISCOVER PAGE -->
     <div class="page active" id="page-discover">
+      <div class="section-label">Your moodboard</div>
 
-      <div class="section-label">Matched for you</div>
-
-      <div class="swipe-card" id="swipe1">
-        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80" alt="Camel coat">
-        <div class="swipe-card-body">
-          <div class="match-label"><span class="match-dot"></span>98% match with your moodboard</div>
-          <h3>Camel Structured Coat</h3>
-          <p class="brand">Maison Lemaire · €420 → €294 with your data</p>
-          <div class="swipe-actions">
-            <button class="btn-reject" onclick="rejectCard('swipe1')">✕ Not for me</button>
-            <button class="btn-accept" onclick="acceptCard('swipe1', 'coat')">✓ I love this</button>
-          </div>
+      <!-- Gallery with zoom -->
+      <div class="gallery-wrap" id="gallery-wrap">
+        <div class="gallery-viewport" id="gallery-viewport">
+          <div class="gallery-grid" id="gallery-grid"></div>
         </div>
-      </div>
-
-      <div class="empty-state" id="swipe-empty" style="display:none">
-        <p>You've reviewed all your matches.<br>Upload more screenshots for new ones ✦</p>
-      </div>
-
-      <div class="section-label">Fashion</div>
-      <div class="cards-row">
-        <div class="card" onclick="openSheet('dress')">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" alt="Linen dress">
-          <div class="card-body">
-            <h3>Linen Wrap Dress</h3>
-            <div class="brand-name">Rouje Paris</div>
-            <div class="price">€132</div>
-            <div class="discount-tag">−30% your data</div>
-          </div>
-        </div>
-        <div class="card" onclick="openSheet('bag')">
-          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" alt="Leather tote">
-          <div class="card-body">
-            <h3>Leather Tote</h3>
-            <div class="brand-name">Sandro</div>
-            <div class="price">€184</div>
-            <div class="discount-tag">−25% your data</div>
-          </div>
-        </div>
-        <div class="card" onclick="openSheet('sneaker')">
-          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="Sneakers">
-          <div class="card-body">
-            <h3>Minimalist Sneaker</h3>
-            <div class="brand-name">Veja</div>
-            <div class="price">€96</div>
-            <div class="discount-tag">−20% your data</div>
-          </div>
-        </div>
-        <div class="card" onclick="openSheet('jacket')">
-          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&q=80" alt="Jacket">
-          <div class="card-body">
-            <h3>Overshirt Jacket</h3>
-            <div class="brand-name">A.P.C.</div>
-            <div class="price">€210</div>
-            <div class="discount-tag">−15% your data</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-label">Art & Culture</div>
-      <div class="cards-row">
-        <div class="card" onclick="openSheet('print')">
-          <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&q=80" alt="Art print">
-          <div class="card-body">
-            <h3>Abstract Print</h3>
-            <div class="brand-name">Galerie Joseph</div>
-            <div class="price">€95</div>
-            <div class="discount-tag">−15% your data</div>
-          </div>
-        </div>
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&q=80" alt="Film">
-          <div class="card-body">
-            <h3>Chungking Express</h3>
-            <div class="brand-name">Film · Wong Kar-wai</div>
-            <div class="price">Watch free</div>
-          </div>
-        </div>
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80" alt="Music">
-          <div class="card-body">
-            <h3>Your Taste Playlist</h3>
-            <div class="brand-name">Built from your saves</div>
-            <div class="price">Listen</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-label">Nearby matches</div>
-      <div class="wide-card" onclick="openSheet('workshop')">
-        <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=200&q=80" alt="Ceramics">
-        <div class="wide-card-body">
-          <h3>Ceramics Workshop</h3>
-          <div class="meta">Atelier Laurette · Paris 11e<br>Saturday 14 June</div>
-          <div class="match-tag"><span class="match-dot"></span>94% match · 2h from you</div>
-        </div>
-      </div>
-      <div class="wide-card" onclick="openSheet('restaurant')">
-        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&q=80" alt="Restaurant">
-        <div class="wide-card-body">
-          <h3>Septime</h3>
-          <div class="meta">Restaurant · Paris 11e<br>Natural wine · Seasonal menu</div>
-          <div class="match-tag"><span class="match-dot"></span>91% match · 1.2km away</div>
-        </div>
-      </div>
-      <div class="wide-card" onclick="openSheet('book')">
-        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=80" alt="Book">
-        <div class="wide-card-body">
-          <h3>Bresson on Bresson</h3>
-          <div class="meta">Photography · Phaidon Press<br>Matched your art saves</div>
-          <div class="match-tag"><span class="match-dot"></span>88% match</div>
+        <div class="gallery-zoom-bar">
+          <div class="zoom-btn" id="zoom-out-btn">−</div>
+          <div class="zoom-indicator" id="zoom-indicator">3 × 5</div>
+          <div class="zoom-btn" id="zoom-in-btn">+</div>
         </div>
       </div>
     </div>
@@ -635,6 +634,32 @@ html, body {
         </div>
       </div>
 
+      <!-- Uploaded screenshots by category -->
+      <div class="upload-cats-label">Your uploaded screenshots</div>
+
+      <div class="upload-cat-section">
+        <div class="upload-cat-title">Fashion</div>
+        <div class="upload-gallery">
+          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80" alt="">
+        </div>
+        <div class="upload-cat-title">Art & Culture</div>
+        <div class="upload-gallery">
+          <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&q=80" alt="">
+        </div>
+        <div class="upload-cat-title">Food & Places</div>
+        <div class="upload-gallery">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=200&q=80" alt="">
+          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=200&q=80" alt="">
+        </div>
+      </div>
+
       <div class="info-card">
         <h4>How it works</h4>
         <div class="step">
@@ -679,6 +704,42 @@ html, body {
         <div class="stat-box">
           <div class="num">3</div>
           <div class="lbl">Purchases</div>
+        </div>
+      </div>
+
+      <div class="section-label">See eligible offers for you</div>
+      <div class="offers-scroll">
+        <div class="offer-card" onclick="openSheet('dress')">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" alt="">
+          <div class="offer-card-body">
+            <div class="offer-brand">Rouje Paris</div>
+            <div class="offer-title">Linen Wrap Dress</div>
+            <span class="offer-pill">−30% for you</span>
+          </div>
+        </div>
+        <div class="offer-card" onclick="openSheet('bag')">
+          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" alt="">
+          <div class="offer-card-body">
+            <div class="offer-brand">Sandro</div>
+            <div class="offer-title">Leather Tote</div>
+            <span class="offer-pill">−25% for you</span>
+          </div>
+        </div>
+        <div class="offer-card" onclick="openSheet('workshop')">
+          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&q=80" alt="">
+          <div class="offer-card-body">
+            <div class="offer-brand">Atelier Laurette</div>
+            <div class="offer-title">Ceramics Workshop</div>
+            <span class="offer-pill">−31% for you</span>
+          </div>
+        </div>
+        <div class="offer-card" onclick="openSheet('sneaker')">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="">
+          <div class="offer-card-body">
+            <div class="offer-brand">Veja</div>
+            <div class="offer-title">Minimalist Sneaker</div>
+            <span class="offer-pill">−20% for you</span>
+          </div>
         </div>
       </div>
 
@@ -759,75 +820,187 @@ html, body {
 <div class="toast" id="toast"></div>
 
 <script>
-const sheetData = {
-  coat: {
-    img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80',
-    title: 'Camel Structured Coat',
-    brand: 'Maison Lemaire',
-    desc: 'Matched from 3 of your screenshots. You have been saving structured earth-tone outerwear for 6 weeks — this is the best available match right now.',
-    price: '€294', original: '€420', save: 'Save €126'
-  },
-  dress: {
-    img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80',
-    title: 'Linen Wrap Dress',
-    brand: 'Rouje Paris',
-    desc: 'Matched from 5 of your screenshots. Relaxed linen, wrap silhouette, natural tones — your most saved aesthetic this season.',
-    price: '€132', original: '€189', save: 'Save €57'
-  },
-  bag: {
-    img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=700&q=80',
-    title: 'Leather Tote',
-    brand: 'Sandro',
-    desc: 'Matched from 4 of your screenshots. Structured, minimal, exactly the silhouette you keep saving.',
-    price: '€184', original: '€245', save: 'Save €61'
-  },
-  sneaker: {
-    img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80',
-    title: 'Minimalist Sneaker',
-    brand: 'Veja',
-    desc: 'Clean white, ethical production, minimal branding. Matches 7 of your saved references.',
-    price: '€96', original: '€120', save: 'Save €24'
-  },
-  jacket: {
-    img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=700&q=80',
-    title: 'Overshirt Jacket',
-    brand: 'A.P.C.',
-    desc: 'Structured, earthy, versatile. Appeared in 3 of your most recent uploads.',
-    price: '€179', original: '€210', save: 'Save €31'
-  },
-  print: {
-    img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=80',
-    title: 'Abstract Print — No. 7',
-    brand: 'Galerie Joseph · Paris 3e',
-    desc: 'Limited edition. Matched from your art saves — same palette, same compositional energy.',
-    price: '€81', original: '€95', save: 'Save €14'
-  },
-  workshop: {
-    img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=700&q=80',
-    title: 'Hand-building Ceramics Workshop',
-    brand: 'Atelier Laurette · Paris 11e',
-    desc: 'You have saved 12 ceramics references in the last month. This Saturday workshop is a 94% match with your aesthetic profile.',
-    price: '€45', original: '€65', save: 'Save €20'
-  },
-  restaurant: {
-    img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80',
-    title: 'Septime',
-    brand: 'Restaurant · Paris 11e',
-    desc: 'Natural wine, seasonal menu, warm lighting. Everything in your saved references points here.',
-    price: 'Book a table', original: null, save: null
-  },
-  book: {
-    img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=700&q=80',
-    title: 'Bresson on Bresson',
-    brand: 'Phaidon Press',
-    desc: 'Interviews and photographs. Matched from your saved art and film references — same visual sensibility.',
-    price: '€28', original: '€35', save: 'Save €7'
+/* ── GALLERY DATA ── */
+const galleryItems = [
+  { img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&q=80', key: 'coat', category: 'Fashion', title: 'Camel Structured Coat', brand: 'Maison Lemaire', match: '98%' },
+  { img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80', key: 'dress', category: 'Fashion', title: 'Linen Wrap Dress', brand: 'Rouje Paris', match: '95%' },
+  { img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80', key: 'bag', category: 'Fashion', title: 'Leather Tote', brand: 'Sandro', match: '93%' },
+  { img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80', key: 'sneaker', category: 'Fashion', title: 'Minimalist Sneaker', brand: 'Veja', match: '90%' },
+  { img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=500&q=80', key: 'jacket', category: 'Fashion', title: 'Overshirt Jacket', brand: 'A.P.C.', match: '88%' },
+  { img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&q=80', key: 'print', category: 'Art', title: 'Abstract Print', brand: 'Galerie Joseph', match: '91%' },
+  { img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80', key: null, category: 'Film', title: 'Chungking Express', brand: 'Wong Kar-wai', match: '89%' },
+  { img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80', key: null, category: 'Music', title: 'Your Taste Playlist', brand: 'Built from saves', match: '87%' },
+  { img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=500&q=80', key: 'workshop', category: 'Events', title: 'Ceramics Workshop', brand: 'Atelier Laurette', match: '94%' },
+  { img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80', key: 'restaurant', category: 'Food', title: 'Septime', brand: 'Paris 11e', match: '91%' },
+  { img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&q=80', key: 'book', category: 'Books', title: 'Bresson on Bresson', brand: 'Phaidon Press', match: '88%' },
+  { img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&q=80', key: null, category: 'Food', title: 'Natural Wine Bar', brand: 'Paris 10e', match: '85%' },
+  { img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80', key: null, category: 'Art', title: 'Portrait Study', brand: 'Galerie Perrotin', match: '83%' },
+  { img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', key: null, category: 'Fashion', title: 'White Linen Shirt', brand: 'Jacquemus', match: '86%' },
+  { img: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&q=80', key: null, category: 'Interiors', title: 'Warm Minimal Room', brand: 'Interior ref', match: '82%' },
+];
+
+/* ── GALLERY STATE ── */
+const ZOOM_LEVELS = [3, 5, 8, 12, 15];
+let currentZoom = 0; // index 0 = 3 cols (zoomed in), 4 = 15 cols (zoomed out)
+const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
+
+// Pan state
+let panX = 0, panY = 0;
+let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+let pinchStartDist = 0, pinchStartZoom = 0;
+
+function getCols() { return ZOOM_LEVELS[currentZoom]; }
+function getRows() { return ROWS_PER_LEVEL[currentZoom]; }
+
+function buildGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const viewport = document.getElementById('gallery-viewport');
+  const cols = getCols();
+  const rows = getRows();
+  const vw = viewport.clientWidth || 390;
+  const cellSize = vw / cols;
+
+  grid.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+  grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
+  grid.style.width = vw + 'px';
+  grid.style.height = (cellSize * rows) + 'px';
+  viewport.style.height = Math.min(cellSize * rows, window.innerHeight * 0.55) + 'px';
+
+  grid.innerHTML = '';
+
+  const total = cols * rows;
+  for (let i = 0; i < total; i++) {
+    const item = galleryItems[i % galleryItems.length];
+    const cell = document.createElement('div');
+    cell.className = 'gallery-cell';
+    cell.style.width = cellSize + 'px';
+    cell.style.height = cellSize + 'px';
+
+    const img = document.createElement('img');
+    img.src = item.img;
+    img.alt = item.title;
+    img.style.borderRadius = '10px';
+    img.style.padding = '1.5px';
+
+    const label = document.createElement('div');
+    label.className = 'cell-category';
+    label.textContent = cols <= 5 ? item.category : '';
+
+    cell.appendChild(img);
+    if (cols <= 5) cell.appendChild(label);
+
+    cell.addEventListener('click', () => {
+      if (item.key) openSheetWithMatch(item.key, item);
+      else openSheetGeneric(item);
+    });
+    grid.appendChild(cell);
   }
+
+  updateZoomIndicator();
+  clampPan();
+  applyPan();
+}
+
+function updateZoomIndicator() {
+  const cols = getCols();
+  const rows = getRows();
+  document.getElementById('zoom-indicator').textContent = `${cols} × ${rows}`;
+}
+
+function clampPan() {
+  const viewport = document.getElementById('gallery-viewport');
+  const grid = document.getElementById('gallery-grid');
+  const vw = viewport.clientWidth || 390;
+  const vh = viewport.clientHeight || 300;
+  const gw = grid.offsetWidth || vw;
+  const gh = grid.offsetHeight || 300;
+  const maxX = 0, minX = Math.min(0, vw - gw);
+  const maxY = 0, minY = Math.min(0, vh - gh);
+  panX = Math.max(minX, Math.min(maxX, panX));
+  panY = Math.max(minY, Math.min(maxY, panY));
+}
+
+function applyPan() {
+  document.getElementById('gallery-grid').style.transform = `translate(${panX}px, ${panY}px)`;
+}
+
+document.getElementById('zoom-out-btn').addEventListener('click', () => {
+  if (currentZoom < ZOOM_LEVELS.length - 1) { currentZoom++; panX = 0; panY = 0; buildGallery(); }
+});
+document.getElementById('zoom-in-btn').addEventListener('click', () => {
+  if (currentZoom > 0) { currentZoom--; panX = 0; panY = 0; buildGallery(); }
+});
+
+/* Touch pan & pinch-zoom */
+const vp = document.getElementById('gallery-viewport');
+
+vp.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinchStartDist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    pinchStartZoom = currentZoom;
+    isDragging = false;
+  } else if (e.touches.length === 1) {
+    isDragging = true;
+    dragStartX = e.touches[0].clientX;
+    dragStartY = e.touches[0].clientY;
+    panStartX = panX;
+    panStartY = panY;
+  }
+}, { passive: true });
+
+vp.addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const dist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    const ratio = pinchStartDist / dist;
+    let newZoom = Math.round(pinchStartZoom + (ratio - 1) * 3);
+    newZoom = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, newZoom));
+    if (newZoom !== currentZoom) { currentZoom = newZoom; panX = 0; panY = 0; buildGallery(); }
+  } else if (isDragging && e.touches.length === 1) {
+    panX = panStartX + (e.touches[0].clientX - dragStartX);
+    panY = panStartY + (e.touches[0].clientY - dragStartY);
+    clampPan();
+    applyPan();
+  }
+}, { passive: false });
+
+vp.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
+
+/* ── SHEET DATA ── */
+const sheetData = {
+  coat: { img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80', title: 'Camel Structured Coat', brand: 'Maison Lemaire', desc: 'Matched from 3 of your screenshots. You have been saving structured earth-tone outerwear for 6 weeks — this is the best available match right now.', price: '€294', original: '€420', save: 'Save €126', refs: '3 references', match: '98%' },
+  dress: { img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80', title: 'Linen Wrap Dress', brand: 'Rouje Paris', desc: 'Matched from 5 of your screenshots. Relaxed linen, wrap silhouette, natural tones — your most saved aesthetic this season.', price: '€132', original: '€189', save: 'Save €57', refs: '5 references', match: '95%' },
+  bag: { img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=700&q=80', title: 'Leather Tote', brand: 'Sandro', desc: 'Matched from 4 of your screenshots. Structured, minimal, exactly the silhouette you keep saving.', price: '€184', original: '€245', save: 'Save €61', refs: '4 references', match: '93%' },
+  sneaker: { img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80', title: 'Minimalist Sneaker', brand: 'Veja', desc: 'Clean white, ethical production, minimal branding. Matches 7 of your saved references.', price: '€96', original: '€120', save: 'Save €24', refs: '7 references', match: '90%' },
+  jacket: { img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=700&q=80', title: 'Overshirt Jacket', brand: 'A.P.C.', desc: 'Structured, earthy, versatile. Appeared in 3 of your most recent uploads.', price: '€179', original: '€210', save: 'Save €31', refs: '3 references', match: '88%' },
+  print: { img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=80', title: 'Abstract Print — No. 7', brand: 'Galerie Joseph · Paris 3e', desc: 'Limited edition. Matched from your art saves — same palette, same compositional energy.', price: '€81', original: '€95', save: 'Save €14', refs: '2 references', match: '91%' },
+  workshop: { img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=700&q=80', title: 'Hand-building Ceramics Workshop', brand: 'Atelier Laurette · Paris 11e', desc: 'You have saved 12 ceramics references in the last month. This Saturday workshop is a 94% match with your aesthetic profile.', price: '€45', original: '€65', save: 'Save €20', refs: '12 references', match: '94%' },
+  restaurant: { img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80', title: 'Septime', brand: 'Restaurant · Paris 11e', desc: 'Natural wine, seasonal menu, warm lighting. Everything in your saved references points here.', price: 'Book a table', original: null, save: null, refs: '6 references', match: '91%' },
+  book: { img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=700&q=80', title: 'Bresson on Bresson', brand: 'Phaidon Press', desc: 'Interviews and photographs. Matched from your saved art and film references — same visual sensibility.', price: '€28', original: '€35', save: 'Save €7', refs: '4 references', match: '88%' }
 };
+
+function openSheetWithMatch(key, item) {
+  const d = sheetData[key] || { img: item.img, title: item.title, brand: item.brand, desc: 'Matched from your saves.', price: null, original: null, save: null, refs: '1 reference', match: item.match };
+  renderSheet(d, key);
+}
+
+function openSheetGeneric(item) {
+  renderSheet({ img: item.img, title: item.title, brand: item.brand, desc: 'Matched from your saves based on your aesthetic profile.', price: null, original: null, save: null, refs: '1 reference', match: item.match }, null);
+}
 
 function openSheet(key) {
   const d = sheetData[key];
   if (!d) return;
+  renderSheet(d, key);
+}
+
+function renderSheet(d, key) {
   const priceBlock = d.original
     ? `<div class="price-row">
         <span class="price">${d.price}</span>
@@ -835,13 +1008,20 @@ function openSheet(key) {
         <span class="save-pill">${d.save}</span>
        </div>
        <button class="btn-buy" onclick="handleBuy('${key}')">Buy now · Discount applied</button>`
-    : `<button class="btn-buy" onclick="handleBuy('${key}')">${d.price}</button>`;
+    : d.price
+    ? `<button class="btn-buy" onclick="handleBuy('${key}')">${d.price}</button>`
+    : '';
 
   document.getElementById('sheet-body').innerHTML = `
     <img src="${d.img}" alt="${d.title}">
     <h2>${d.title}</h2>
     <p class="sheet-brand">${d.brand}</p>
     <p class="sheet-desc">${d.desc}</p>
+    <p style="font-size:11px;color:var(--secondary);margin-bottom:12px;">Matched from <strong style="color:#1a1a1a">${d.refs || '—'}</strong> · <strong style="color:#1D9E75">${d.match || '—'} match</strong></p>
+    <div class="match-actions">
+      <button class="match-btn-no" onclick="closeSheet(); showToast('Got it — won\\'t show again')">✕</button>
+      <button class="match-btn-yes" onclick="${priceBlock ? '' : 'closeSheet(); showToast(\"Added to saves ✓\")'}">✓</button>
+    </div>
     ${priceBlock}
     <button class="btn-close-sheet" onclick="closeSheet()">Close</button>
   `;
@@ -869,28 +1049,6 @@ function switchTab(tab) {
   document.getElementById('feed').scrollTop = 0;
 }
 
-function rejectCard(id) {
-  const el = document.getElementById(id);
-  el.style.transform = 'translateX(-110%) rotate(-8deg)';
-  el.style.opacity = '0';
-  setTimeout(() => {
-    el.style.display = 'none';
-    document.getElementById('swipe-empty').style.display = 'block';
-  }, 300);
-  showToast('Got it — we will not show you this again');
-}
-
-function acceptCard(id, key) {
-  const el = document.getElementById(id);
-  el.style.transform = 'translateX(110%) rotate(8deg)';
-  el.style.opacity = '0';
-  setTimeout(() => {
-    el.style.display = 'none';
-    document.getElementById('swipe-empty').style.display = 'block';
-    openSheet(key);
-  }, 300);
-}
-
 function handleUpload(input) {
   if (input.files && input.files.length > 0) {
     showToast(`${input.files.length} screenshot${input.files.length > 1 ? 's' : ''} uploaded — analysing your taste ✦`);
@@ -904,16 +1062,10 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Swipe gesture support for swipe card
-let startX = 0;
-document.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-document.addEventListener('touchend', e => {
-  const diff = e.changedTouches[0].clientX - startX;
-  const card = document.getElementById('swipe1');
-  if (!card || card.style.display === 'none') return;
-  if (diff < -80) rejectCard('swipe1');
-  else if (diff > 80) acceptCard('swipe1', 'coat');
-}, { passive: true });
+// Init gallery
+buildGallery();
+window.addEventListener('resize', buildGallery);
 </script>
 </body>
 </html>
+
