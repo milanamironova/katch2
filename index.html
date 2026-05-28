@@ -118,22 +118,32 @@ html, body {
   color: var(--secondary);
   padding: 16px 20px 10px;
 }
+
+/* ── GALLERY (new pan/zoom implementation) ── */
 .gallery-wrap {
   position: relative;
   margin: 8px 0;
   overflow: hidden;
   touch-action: none;
   user-select: none;
+  cursor: grab;
 }
+.gallery-wrap.dragging { cursor: grabbing; }
 .gallery-viewport {
   overflow: hidden;
   width: 100%;
+  position: relative;
+}
+.gallery-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 .gallery-grid {
   display: grid;
   gap: 0;
-  transform-origin: 0 0;
-  will-change: transform;
 }
 .gallery-cell {
   position: relative;
@@ -147,6 +157,9 @@ html, body {
   display: block;
   border-radius: 12px;
   transition: transform 0.1s;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .gallery-cell:active img { transform: scale(0.96); }
 .gallery-cell .cell-category {
@@ -164,109 +177,25 @@ html, body {
   opacity: 0;
   transition: opacity 0.2s;
 }
-.gallery-zoom-3 .cell-category { opacity: 1; }
-.gallery-zoom-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 8px 0 2px;
-}
-.zoom-btn {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: var(--white);
-  border: 0.5px solid rgba(86,92,106,0.2);
-  font-size: 18px;
-  color: var(--secondary);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-weight: 300;
-}
-.zoom-indicator {
+.gallery-hint {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.45);
+  color: white;
   font-size: 11px;
-  color: var(--secondary);
   font-weight: 500;
-  min-width: 50px;
-  text-align: center;
-}
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0);
-  display: flex;
-  align-items: flex-end;
-  z-index: 100;
+  padding: 5px 14px;
+  border-radius: 20px;
   pointer-events: none;
-  transition: background 0.25s;
-  padding-bottom: var(--safe-bottom);
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.5s;
+  z-index: 10;
 }
-.overlay.show { background: rgba(0,0,0,0.45); pointer-events: all; }
-.sheet {
-  width: 100%;
-  background: var(--white);
-  border-radius: 24px 24px 0 0;
-  padding: 8px 20px 24px;
-  max-height: 88vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
-}
-.sheet::-webkit-scrollbar { display: none; }
-.overlay.show .sheet { transform: translateY(0); }
-.sheet-handle { width: 36px; height: 4px; background: rgba(86,92,106,0.25); border-radius: 2px; margin: 8px auto 18px; }
-.sheet img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 14px; display: block; }
-.sheet h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 2px; }
-.sheet .sheet-brand { font-size: 13px; color: var(--secondary); margin-bottom: 10px; }
-.sheet .sheet-desc { font-size: 13px; color: var(--secondary); line-height: 1.6; margin-bottom: 14px; }
-.price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
-.price-row .price { font-size: 26px; font-weight: 700; color: var(--primary); font-family: 'Barlow Condensed', sans-serif; }
-.price-row .original { font-size: 14px; color: var(--secondary); text-decoration: line-through; }
-.price-row .save-pill { font-size: 11px; background: #FFF0F6; color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-.match-actions { display: flex; gap: 12px; margin-bottom: 14px; }
-.match-btn-no {
-  flex: 1; height: 44px; border: 0.5px solid rgba(86,92,106,0.3);
-  border-radius: 14px; background: transparent; font-size: 22px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s; font-family: inherit; color: var(--secondary);
-}
-.match-btn-no:active { background: #f5f5f5; }
-.match-btn-yes {
-  flex: 1; height: 44px; border: none; border-radius: 14px;
-  background: var(--primary); font-size: 22px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.15s; font-family: inherit; color: white;
-}
-.match-btn-yes:active { opacity: 0.85; }
-.btn-buy {
-  width: 100%; padding: 16px; border: none; border-radius: 16px;
-  background: var(--primary); font-size: 16px; font-weight: 600;
-  color: white; cursor: pointer; font-family: inherit; transition: opacity 0.15s;
-}
-.btn-buy:active { opacity: 0.85; }
-.btn-close-sheet {
-  width: 100%; padding: 13px; border: 0.5px solid rgba(86,92,106,0.25);
-  border-radius: 14px; background: transparent; font-size: 14px;
-  color: var(--secondary); cursor: pointer; font-family: inherit; margin-top: 10px;
-}
-/* discount lock */
-.locked-sheet-msg { background: #FFF0F6; border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 16px; border: 0.5px solid rgba(203,13,99,0.2); }
-.locked-sheet-msg .lock { font-size: 24px; margin-bottom: 6px; }
-.locked-sheet-msg p { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-.locked-sheet-msg small { font-size: 12px; color: var(--secondary); line-height: 1.5; display: block; }
-/* discount counter */
-.discount-counter {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--white); border-radius: 14px; padding: 9px 14px;
-  border: 0.5px solid rgba(203,13,99,0.25); margin-bottom: 10px;
-}
-.discount-counter .dc-left { flex: 1; }
-.discount-counter .dc-title { font-size: 12px; font-weight: 600; color: #1a1a1a; }
-.discount-counter .dc-sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
-.progress-bar { height: 4px; background: rgba(203,13,99,0.12); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.4s ease; }
-.dc-badge { background: var(--primary); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; white-space: nowrap; }
+.gallery-hint.hidden { opacity: 0; }
+
 .moodboard-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -356,6 +285,82 @@ html, body {
 .nav-btn.active .nav-label { color: var(--primary); font-weight: 600; }
 .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: white; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 20px; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 200; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* discount counter */
+.discount-counter {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white); border-radius: 14px; padding: 9px 14px;
+  border: 0.5px solid rgba(203,13,99,0.25); margin-bottom: 10px;
+}
+.discount-counter .dc-left { flex: 1; }
+.discount-counter .dc-title { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+.discount-counter .dc-sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
+.progress-bar { height: 4px; background: rgba(203,13,99,0.12); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.4s ease; }
+.dc-badge { background: var(--primary); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; white-space: nowrap; }
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+  pointer-events: none;
+  transition: background 0.25s;
+  padding-bottom: var(--safe-bottom);
+}
+.overlay.show { background: rgba(0,0,0,0.45); pointer-events: all; }
+.sheet {
+  width: 100%;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  padding: 8px 20px 24px;
+  max-height: 88vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.sheet::-webkit-scrollbar { display: none; }
+.overlay.show .sheet { transform: translateY(0); }
+.sheet-handle { width: 36px; height: 4px; background: rgba(86,92,106,0.25); border-radius: 2px; margin: 8px auto 18px; }
+.sheet img { width: 100%; height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 14px; display: block; }
+.sheet h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+.sheet .sheet-brand { font-size: 13px; color: var(--secondary); margin-bottom: 10px; }
+.sheet .sheet-desc { font-size: 13px; color: var(--secondary); line-height: 1.6; margin-bottom: 14px; }
+.price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.price-row .price { font-size: 26px; font-weight: 700; color: var(--primary); font-family: 'Barlow Condensed', sans-serif; }
+.price-row .original { font-size: 14px; color: var(--secondary); text-decoration: line-through; }
+.price-row .save-pill { font-size: 11px; background: #FFF0F6; color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.match-actions { display: flex; gap: 12px; margin-bottom: 14px; }
+.match-btn-no {
+  flex: 1; height: 44px; border: 0.5px solid rgba(86,92,106,0.3);
+  border-radius: 14px; background: transparent; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; font-family: inherit; color: var(--secondary);
+}
+.match-btn-no:active { background: #f5f5f5; }
+.match-btn-yes {
+  flex: 1; height: 44px; border: none; border-radius: 14px;
+  background: var(--primary); font-size: 22px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.15s; font-family: inherit; color: white;
+}
+.match-btn-yes:active { opacity: 0.85; }
+.btn-buy {
+  width: 100%; padding: 16px; border: none; border-radius: 16px;
+  background: var(--primary); font-size: 16px; font-weight: 600;
+  color: white; cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+}
+.btn-buy:active { opacity: 0.85; }
+.btn-close-sheet {
+  width: 100%; padding: 13px; border: 0.5px solid rgba(86,92,106,0.25);
+  border-radius: 14px; background: transparent; font-size: 14px;
+  color: var(--secondary); cursor: pointer; font-family: inherit; margin-top: 10px;
+}
+.locked-sheet-msg { background: #FFF0F6; border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 16px; border: 0.5px solid rgba(203,13,99,0.2); }
+.locked-sheet-msg .lock { font-size: 24px; margin-bottom: 6px; }
+.locked-sheet-msg p { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.locked-sheet-msg small { font-size: 12px; color: var(--secondary); line-height: 1.5; display: block; }
 </style>
 </head>
 <body>
@@ -374,30 +379,13 @@ html, body {
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="logo"><span class="k-letter">K</span>atch</div>
+        <div class="logo" style="display:flex;align-items:center;gap:8px;"><img src="logo.png" alt="Katch logo" style="height:32px;width:auto;display:block;"><span class="k-letter">K</span>atch</div>
         <div class="tagline">Discover the hidden</div>
       </div>
       <div class="header-avatar" onclick="switchTab('profile')">M</div>
     </div>
 
-    <!-- Discount counter -->
-    <div class="discount-counter">
-      <div class="dc-left">
-        <div class="dc-title" id="dc-title">Next discount in <span id="dc-remaining">20</span> screenshots</div>
-        <div class="dc-sub">Upload screenshots to unlock discounts</div>
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      </div>
-      <div class="dc-badge" id="dc-badge">0/20</div>
-    </div>
 
-    <div class="upload-pill" onclick="switchTab('upload')">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" color="var(--primary)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <div class="upload-pill-text">
-        <div class="main">Drop your screenshots</div>
-        <div class="sub" id="upload-sub">Earn discounts from your taste</div>
-      </div>
-      <span class="earn-badge">+ €</span>
-    </div>
   </div>
 
   <div class="feed" id="feed">
@@ -407,13 +395,11 @@ html, body {
       <div class="section-label">Your moodboard</div>
       <div class="gallery-wrap" id="gallery-wrap">
         <div class="gallery-viewport" id="gallery-viewport">
-          <div class="gallery-grid" id="gallery-grid"></div>
+          <div class="gallery-canvas" id="gallery-canvas">
+            <div class="gallery-grid" id="gallery-grid"></div>
+          </div>
         </div>
-        <div class="gallery-zoom-bar">
-          <div class="zoom-btn" id="zoom-out-btn">−</div>
-          <div class="zoom-indicator" id="zoom-indicator">3 × 5</div>
-          <div class="zoom-btn" id="zoom-in-btn">+</div>
-        </div>
+        <div class="gallery-hint" id="gallery-hint">Drag · Pinch to zoom</div>
       </div>
     </div>
 
@@ -688,7 +674,7 @@ html, body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ── YOUR IMAGES mapped to gallery items ──
+// ── GALLERY ITEMS ──
 const galleryItems = [
   { img:'dress1.jpeg',    key:'dress1',    category:'Fashion',    title:'Wrap Dress',        brand:'Rouje Paris',     match:'95%' },
   { img:'dress2.jpeg',    key:'dress2',    category:'Fashion',    title:'Summer Dress',      brand:'Sandro',          match:'91%' },
@@ -706,10 +692,10 @@ const galleryItems = [
   { img:'bag1.jpeg',      key:'bag1',      category:'Fashion',    title:'Leather Tote',      brand:'Sandro',          match:'93%' },
   { img:'bag2.jpeg',      key:'bag2',      category:'Fashion',    title:'Mini Shoulder Bag', brand:'A.P.C.',          match:'89%' },
   { img:'hat1.jpeg',      key:'hat1',      category:'Fashion',    title:'Woven Hat',         brand:'Jacquemus',       match:'85%' },
-  { img:'necklace1.jpeg', key:'necklace1', category:'Accessories','title':'Gold Necklace',   brand:'Gas Bijoux',      match:'90%' },
-  { img:'ring1.jpeg',     key:'ring1',     category:'Accessories','title':'Sculptural Ring', brand:'Dinosaur Designs',match:'87%' },
-  { img:'clip1.jpeg',     key:'clip1',     category:'Accessories','title':'Hair Clip',       brand:'Lelet NY',        match:'83%' },
-  { img:'clip2.jpeg',     key:'clip2',     category:'Accessories','title':'Pearl Clip',      brand:'Jennifer Behr',   match:'81%' },
+  { img:'necklace1.jpeg', key:'necklace1', category:'Accessories',title:'Gold Necklace',     brand:'Gas Bijoux',      match:'90%' },
+  { img:'ring1.jpeg',     key:'ring1',     category:'Accessories',title:'Sculptural Ring',   brand:'Dinosaur Designs',match:'87%' },
+  { img:'clip1.jpeg',     key:'clip1',     category:'Accessories',title:'Hair Clip',         brand:'Lelet NY',        match:'83%' },
+  { img:'clip2.jpeg',     key:'clip2',     category:'Accessories',title:'Pearl Clip',        brand:'Jennifer Behr',   match:'81%' },
   { img:'makeup1.jpeg',   key:'makeup1',   category:'Beauty',     title:'Foundation',        brand:'ILIA Beauty',     match:'88%' },
   { img:'makeup2.jpeg',   key:'makeup2',   category:'Beauty',     title:'Lip Colour',        brand:'Rare Beauty',     match:'86%' },
   { img:'makeup3.jpeg',   key:'makeup3',   category:'Beauty',     title:'Eye Palette',       brand:'Charlotte Tilbury',match:'84%'},
@@ -763,79 +749,312 @@ const sheetData = {
 // ── DISCOUNT STATE ──
 const LIMIT = 20;
 let state = { uploaded: 0, discountsUnlocked: 0, discountsUsed: 0 };
-
 function canUseDiscount() { return state.discountsUnlocked > state.discountsUsed; }
 
-// ── GALLERY ──
+// ── GALLERY: iOS-style discrete zoom levels + pinch/scroll/momentum ──
+// Zoom levels: [cols × rows]. Max out = 15×20, max in = 3×5
 const ZOOM_LEVELS = [3, 5, 8, 12, 15];
 const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
-let currentZoom = 0;
-let panX = 0, panY = 0;
-let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
-let pinchStartDist = 0, pinchStartZoom = 0;
+const GAP = 2;
+
+// The grid is always built at the WIDEST level (15×20) with small cells.
+// Zoom is achieved by CSS scale — pinch/scroll drives a continuous scale,
+// which maps to discrete zoom levels on release (iOS feel).
+// Each zoom level corresponds to a target scale value derived from cell size.
+
+let currentZoomIdx = 1; // start at 5×8
+let gx = 0, gy = 0, gscale = 1;
+let targetScale = 1; // the discrete scale for current zoom level
+let vx = 0, vy = 0;
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+let lastMoveX = 0, lastMoveY = 0, lastMoveT = 0;
+let pinchActive = false, pinchStartDist = 0, pinchStartScale = 1;
+let pinchMidX = 0, pinchMidY = 0, pinchStartGX = 0, pinchStartGY = 0;
+let rafId = null;
+let clickBlocked = false;
+let galleryVW = 390, galleryVH = 300;
+
+// Base cell size — grid is always built at 15 cols
+const BASE_COLS = 15;
+const BASE_ROWS = 20;
+
+function cellSizeForLevel(idx) {
+  // cell size so that ZOOM_LEVELS[idx] cols fill the viewport width
+  return (galleryVW - (ZOOM_LEVELS[idx] - 1) * GAP) / ZOOM_LEVELS[idx];
+}
+
+function scaleForLevel(idx) {
+  // scale relative to BASE grid cell size
+  const baseCellW = (galleryVW - (BASE_COLS - 1) * GAP) / BASE_COLS;
+  return cellSizeForLevel(idx) / baseCellW;
+}
 
 function buildGallery() {
-  const grid = document.getElementById('gallery-grid');
+  const wrap = document.getElementById('gallery-wrap');
   const viewport = document.getElementById('gallery-viewport');
-  const cols = ZOOM_LEVELS[currentZoom];
-  const rows = ROWS_PER_LEVEL[currentZoom];
-  const vw = viewport.clientWidth || 390;
-  const cellSize = vw / cols;
-  grid.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
-  grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
-  grid.style.width = vw + 'px';
-  grid.style.height = (cellSize * rows) + 'px';
-  viewport.style.height = Math.min(cellSize * rows, window.innerHeight * 0.55) + 'px';
+  const grid = document.getElementById('gallery-grid');
+
+  galleryVW = wrap.clientWidth || 390;
+  galleryVH = Math.round(window.innerHeight * 0.52);
+  viewport.style.height = galleryVH + 'px';
+
+  const baseCellW = (galleryVW - (BASE_COLS - 1) * GAP) / BASE_COLS;
+  const totalW = BASE_COLS * baseCellW + (BASE_COLS - 1) * GAP;
+  const totalH = BASE_ROWS * baseCellW + (BASE_ROWS - 1) * GAP;
+
+  grid.style.gridTemplateColumns = `repeat(${BASE_COLS}, ${baseCellW}px)`;
+  grid.style.gap = GAP + 'px';
+  grid.style.width = totalW + 'px';
+  grid.style.height = totalH + 'px';
   grid.innerHTML = '';
-  const total = cols * rows;
+
+  const total = BASE_COLS * BASE_ROWS;
   for (let i = 0; i < total; i++) {
     const item = galleryItems[i % galleryItems.length];
     const cell = document.createElement('div');
     cell.className = 'gallery-cell';
-    cell.style.width = cellSize + 'px';
-    cell.style.height = cellSize + 'px';
+    cell.style.width = baseCellW + 'px';
+    cell.style.height = baseCellW + 'px';
     const img = document.createElement('img');
     img.src = item.img;
     img.alt = item.title;
-    img.style.borderRadius = '10px';
-    img.style.padding = '1.5px';
-    const label = document.createElement('div');
-    label.className = 'cell-category';
-    if (cols <= 5) label.textContent = item.category;
+    img.style.borderRadius = Math.max(3, baseCellW * 0.08) + 'px';
+    img.style.padding = '1px';
     cell.appendChild(img);
-    if (cols <= 5) cell.appendChild(label);
-    cell.addEventListener('click', () => openSheet(item.key, item));
+    cell.addEventListener('click', () => {
+      if (clickBlocked) return;
+      openSheet(item.key, item);
+    });
     grid.appendChild(cell);
   }
-  document.getElementById('zoom-indicator').textContent = `${cols} × ${rows}`;
-  clampPan(); applyPan();
+
+  // Apply current zoom level scale, centered
+  snapToLevel(currentZoomIdx, false);
 }
 
-function clampPan() {
-  const viewport = document.getElementById('gallery-viewport');
+function snapToLevel(idx, animated) {
+  currentZoomIdx = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, idx));
+  const s = scaleForLevel(currentZoomIdx);
+  const wrap = document.getElementById('gallery-wrap');
   const grid = document.getElementById('gallery-grid');
-  const vw = viewport.clientWidth || 390;
-  const vh = viewport.clientHeight || 300;
-  const gw = grid.offsetWidth || vw;
-  const gh = grid.offsetHeight || 300;
-  panX = Math.max(Math.min(0, vw - gw), Math.min(0, panX));
-  panY = Math.max(Math.min(0, vh - gh), Math.min(0, panY));
+  const totalW = grid.offsetWidth * s;
+  const totalH = grid.offsetHeight * s;
+  // re-center on snap
+  gx = (galleryVW - totalW) / 2;
+  gy = Math.min(0, (galleryVH - totalH) / 2);
+  gscale = s;
+  targetScale = s;
+  applyTransform(animated);
 }
-function applyPan() { document.getElementById('gallery-grid').style.transform = `translate(${panX}px,${panY}px)`; }
 
-document.getElementById('zoom-out-btn').addEventListener('click', () => { if (currentZoom < ZOOM_LEVELS.length-1) { currentZoom++; panX=0; panY=0; buildGallery(); } });
-document.getElementById('zoom-in-btn').addEventListener('click', () => { if (currentZoom > 0) { currentZoom--; panX=0; panY=0; buildGallery(); } });
+function applyTransform(animated) {
+  const canvas = document.getElementById('gallery-canvas');
+  canvas.style.transition = animated ? 'transform 0.28s cubic-bezier(0.32,0.72,0,1)' : 'none';
+  canvas.style.transform = `translate(${gx}px,${gy}px) scale(${gscale})`;
+}
 
-const vp = document.getElementById('gallery-viewport');
-vp.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) { pinchStartDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); pinchStartZoom = currentZoom; isDragging = false; }
-  else if (e.touches.length === 1) { isDragging=true; dragStartX=e.touches[0].clientX; dragStartY=e.touches[0].clientY; panStartX=panX; panStartY=panY; }
-}, { passive: true });
-vp.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) { e.preventDefault(); const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); let nz=Math.round(pinchStartZoom+(pinchStartDist/dist-1)*3); nz=Math.max(0,Math.min(ZOOM_LEVELS.length-1,nz)); if(nz!==currentZoom){currentZoom=nz;panX=0;panY=0;buildGallery();} }
-  else if (isDragging && e.touches.length===1) { panX=panStartX+(e.touches[0].clientX-dragStartX); panY=panStartY+(e.touches[0].clientY-dragStartY); clampPan(); applyPan(); }
-}, { passive: false });
-vp.addEventListener('touchend', () => { isDragging=false; }, { passive: true });
+function stopInertia() {
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  vx = 0; vy = 0;
+}
+
+function startInertia() {
+  if (rafId) cancelAnimationFrame(rafId);
+  const decay = 0.90;
+  const tick = () => {
+    if (Math.abs(vx) < 0.3 && Math.abs(vy) < 0.3) { rafId = null; return; }
+    vx *= decay; vy *= decay;
+    gx += vx; gy += vy;
+    applyTransform(false);
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+}
+
+// Map a continuous scale to nearest zoom level index
+function nearestZoomIdx(s) {
+  let best = 0, bestDist = Infinity;
+  for (let i = 0; i < ZOOM_LEVELS.length; i++) {
+    const d = Math.abs(scaleForLevel(i) - s);
+    if (d < bestDist) { bestDist = d; best = i; }
+  }
+  return best;
+}
+
+// Zoom continuously (during pinch/scroll), pivot in viewport coords
+function zoomContinuous(pivotX, pivotY, factor) {
+  const minS = scaleForLevel(ZOOM_LEVELS.length - 1) * 0.85;
+  const maxS = scaleForLevel(0) * 1.15;
+  const newScale = Math.min(maxS, Math.max(minS, gscale * factor));
+  const ratio = newScale / gscale;
+  gx = pivotX - ratio * (pivotX - gx);
+  gy = pivotY - ratio * (pivotY - gy);
+  gscale = newScale;
+  applyTransform(false);
+}
+
+// On pinch/scroll end: snap to nearest discrete level, keeping pivot
+function snapNearest(pivotX, pivotY) {
+  const idx = nearestZoomIdx(gscale);
+  const oldScale = gscale;
+  const newScale = scaleForLevel(idx);
+  const ratio = newScale / oldScale;
+  gx = pivotX - ratio * (pivotX - gx);
+  gy = pivotY - ratio * (pivotY - gy);
+  gscale = newScale;
+  currentZoomIdx = idx;
+  targetScale = newScale;
+  applyTransform(true);
+}
+
+function initGalleryInteraction() {
+  const wrap = document.getElementById('gallery-wrap');
+
+  // ── MOUSE ──
+  wrap.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    stopInertia();
+    isDragging = true;
+    clickBlocked = false;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    panStartX = gx;
+    panStartY = gy;
+    lastMoveX = e.clientX;
+    lastMoveY = e.clientY;
+    lastMoveT = Date.now();
+    vx = 0; vy = 0;
+    wrap.classList.add('dragging');
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - lastMoveX;
+    const dy = e.clientY - lastMoveY;
+    const dt = Date.now() - lastMoveT;
+    if (dt > 0) { vx = dx / dt * 16; vy = dy / dt * 16; }
+    lastMoveX = e.clientX; lastMoveY = e.clientY; lastMoveT = Date.now();
+
+    const moved = Math.abs(e.clientX - dragStartX) + Math.abs(e.clientY - dragStartY);
+    if (moved > 4) clickBlocked = true;
+
+    gx = panStartX + (e.clientX - dragStartX);
+    gy = panStartY + (e.clientY - dragStartY);
+    applyTransform(false);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    wrap.classList.remove('dragging');
+    startInertia();
+  });
+
+  // ── SCROLL WHEEL ──
+  wrap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    stopInertia();
+    const rect = wrap.getBoundingClientRect();
+    const pivotX = e.clientX - rect.left;
+    const pivotY = e.clientY - rect.top;
+    const factor = e.deltaY < 0 ? 1.10 : 0.91;
+    zoomContinuous(pivotX, pivotY, factor);
+    clearTimeout(wrap._snapTimer);
+    wrap._snapTimer = setTimeout(() => snapNearest(pivotX, pivotY), 220);
+  }, { passive: false });
+
+  // ── TOUCH ──
+  wrap.addEventListener('touchstart', (e) => {
+    stopInertia();
+    if (e.touches.length === 1) {
+      pinchActive = false;
+      isDragging = true;
+      clickBlocked = false;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      panStartX = gx;
+      panStartY = gy;
+      lastMoveX = e.touches[0].clientX;
+      lastMoveY = e.touches[0].clientY;
+      lastMoveT = Date.now();
+      vx = 0; vy = 0;
+      hideHint();
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      pinchActive = true;
+      clickBlocked = true;
+      const dx = e.touches[1].clientX - e.touches[0].clientX;
+      const dy = e.touches[1].clientY - e.touches[0].clientY;
+      pinchStartDist = Math.sqrt(dx * dx + dy * dy);
+      pinchStartScale = gscale;
+      const rect = wrap.getBoundingClientRect();
+      pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+      pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+      hideHint();
+    }
+  }, { passive: true });
+
+  wrap.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1 && isDragging) {
+      const dx = e.touches[0].clientX - lastMoveX;
+      const dy = e.touches[0].clientY - lastMoveY;
+      const dt = Date.now() - lastMoveT;
+      if (dt > 0) { vx = dx / dt * 16; vy = dy / dt * 16; }
+      lastMoveX = e.touches[0].clientX;
+      lastMoveY = e.touches[0].clientY;
+      lastMoveT = Date.now();
+
+      const moved = Math.abs(e.touches[0].clientX - dragStartX) + Math.abs(e.touches[0].clientY - dragStartY);
+      if (moved > 4) clickBlocked = true;
+
+      gx = panStartX + (e.touches[0].clientX - dragStartX);
+      gy = panStartY + (e.touches[0].clientY - dragStartY);
+      applyTransform(false);
+    } else if (e.touches.length === 2 && pinchActive) {
+      const dx = e.touches[1].clientX - e.touches[0].clientX;
+      const dy = e.touches[1].clientY - e.touches[0].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const factor = dist / pinchStartDist;
+      pinchStartDist = dist;
+      zoomContinuous(pinchMidX, pinchMidY, factor);
+    }
+  }, { passive: false });
+
+  wrap.addEventListener('touchend', (e) => {
+    if (e.touches.length === 0) {
+      if (pinchActive) {
+        pinchActive = false;
+        snapNearest(pinchMidX, pinchMidY);
+      } else if (isDragging) {
+        isDragging = false;
+        startInertia();
+      }
+    } else if (e.touches.length === 1 && pinchActive) {
+      snapNearest(pinchMidX, pinchMidY);
+      pinchActive = false;
+      isDragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      panStartX = gx;
+      panStartY = gy;
+      lastMoveX = e.touches[0].clientX;
+      lastMoveY = e.touches[0].clientY;
+      lastMoveT = Date.now();
+      vx = 0; vy = 0;
+    }
+  }, { passive: true });
+}
+
+let hintHidden = false;
+function hideHint() {
+  if (hintHidden) return;
+  hintHidden = true;
+  const hint = document.getElementById('gallery-hint');
+  hint.classList.add('hidden');
+}
 
 // ── SHEET ──
 function openSheet(key, item) {
@@ -923,8 +1142,8 @@ function showToast(msg) {
 }
 
 buildGallery();
+initGalleryInteraction();
 window.addEventListener('resize', buildGallery);
 </script>
 </body>
 </html>
-
