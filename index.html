@@ -588,6 +588,14 @@ html, body {
             <span class="offer-pill">−20% for you</span>
           </div>
         </div>
+        <div class="offer-card" onclick="openSheet('ceramicsclass')">
+          <img src="ceramicsclass.png" alt="ceramics class">
+          <div class="offer-card-body">
+            <div class="offer-brand">Near you · Paris 11e</div>
+            <div class="offer-title">Ceramics Class</div>
+            <span class="offer-pill">−15% for you</span>
+          </div>
+        </div>
         <div class="offer-card" onclick="openSheet('painting1')">
           <img src="painting1.jpeg" alt="painting">
           <div class="offer-card-body">
@@ -704,6 +712,7 @@ const galleryItems = [
   { img:'vase4.jpeg',     key:'vase4',     category:'Home',       title:'Sculptural Vase',   brand:'HAY',             match:'85%' },
   { img:'lamp1.jpeg',     key:'lamp1',     category:'Home',       title:'Arc Floor Lamp',    brand:'Flos',            match:'87%' },
   { img:'lingerie1.jpeg', key:'lingerie1', category:'Fashion',    title:'Silk Slip Set',     brand:'Eres',            match:'82%' },
+  { img:'ceramicsclass.png', key:'ceramicsclass', category:'Experience', title:'Ceramics Class', brand:'Near you · Paris 11e', match:'96%' },
 ];
 
 const sheetData = {
@@ -739,6 +748,7 @@ const sheetData = {
   vase4:     { price:'€88',  original:'€115', save:'Save €27',  desc:'Sculptural vase matched from your design-forward home saves.' },
   lamp1:     { price:'€245', original:'€320', save:'Save €75',  desc:'Arc floor lamp matched from your interior and lighting saves.' },
   lingerie1: { price:'€95',  original:'€125', save:'Save €30',  desc:'Silk slip set matched from your elevated everyday saves.' },
+  ceramicsclass: { price:'€38', original:'€45', save:'Save €7', desc:'A weekly ceramics class running 5 minutes from you in the 11th. Matched from 12 of your ceramic and art saves — this is your neighbourhood, your obsession, your next Tuesday night.' },
 };
 
 // ── DISCOUNT STATE — starts with 1 discount already unlocked ──
