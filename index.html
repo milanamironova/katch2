@@ -765,72 +765,106 @@ const LIMIT = 20;
 let state = { uploaded: 0, discountsUnlocked: 0, discountsUsed: 0 };
 function canUseDiscount() { return state.discountsUnlocked > state.discountsUsed; }
 
-// ── GALLERY: pan/zoom/momentum ──
-const COLS = 4;
-const ROWS = 8;
-const CELL = 90; // base cell size px
+// ── GALLERY: iOS-style discrete zoom levels + pinch/scroll/momentum ──
+// Zoom levels: [cols × rows]. Max out = 15×20, max in = 3×5
+const ZOOM_LEVELS = [3, 5, 8, 12, 15];
+const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
 const GAP = 2;
-const SCALE_MIN = 0.4;
-const SCALE_MAX = 4;
 
+// The grid is always built at the WIDEST level (15×20) with small cells.
+// Zoom is achieved by CSS scale — pinch/scroll drives a continuous scale,
+// which maps to discrete zoom levels on release (iOS feel).
+// Each zoom level corresponds to a target scale value derived from cell size.
+
+let currentZoomIdx = 1; // start at 5×8
 let gx = 0, gy = 0, gscale = 1;
+let targetScale = 1; // the discrete scale for current zoom level
 let vx = 0, vy = 0;
 let isDragging = false;
 let dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
 let lastMoveX = 0, lastMoveY = 0, lastMoveT = 0;
-let pinchActive = false, pinchStartDist = 0, pinchStartScale = 1, pinchStartX = 0, pinchStartY = 0, pinchStartGX = 0, pinchStartGY = 0;
+let pinchActive = false, pinchStartDist = 0, pinchStartScale = 1;
+let pinchMidX = 0, pinchMidY = 0, pinchStartGX = 0, pinchStartGY = 0;
 let rafId = null;
 let clickBlocked = false;
+let galleryVW = 390, galleryVH = 300;
+
+// Base cell size — grid is always built at 15 cols
+const BASE_COLS = 15;
+const BASE_ROWS = 20;
+
+function cellSizeForLevel(idx) {
+  // cell size so that ZOOM_LEVELS[idx] cols fill the viewport width
+  return (galleryVW - (ZOOM_LEVELS[idx] - 1) * GAP) / ZOOM_LEVELS[idx];
+}
+
+function scaleForLevel(idx) {
+  // scale relative to BASE grid cell size
+  const baseCellW = (galleryVW - (BASE_COLS - 1) * GAP) / BASE_COLS;
+  return cellSizeForLevel(idx) / baseCellW;
+}
 
 function buildGallery() {
   const wrap = document.getElementById('gallery-wrap');
   const viewport = document.getElementById('gallery-viewport');
-  const canvas = document.getElementById('gallery-canvas');
   const grid = document.getElementById('gallery-grid');
 
-  const vw = wrap.clientWidth || 390;
-  const vh = Math.round(window.innerHeight * 0.52);
-  viewport.style.height = vh + 'px';
+  galleryVW = wrap.clientWidth || 390;
+  galleryVH = Math.round(window.innerHeight * 0.52);
+  viewport.style.height = galleryVH + 'px';
 
-  const totalW = COLS * CELL + (COLS - 1) * GAP;
-  const totalH = ROWS * CELL + (ROWS - 1) * GAP;
+  const baseCellW = (galleryVW - (BASE_COLS - 1) * GAP) / BASE_COLS;
+  const totalW = BASE_COLS * baseCellW + (BASE_COLS - 1) * GAP;
+  const totalH = BASE_ROWS * baseCellW + (BASE_ROWS - 1) * GAP;
 
-  grid.style.gridTemplateColumns = `repeat(${COLS}, ${CELL}px)`;
+  grid.style.gridTemplateColumns = `repeat(${BASE_COLS}, ${baseCellW}px)`;
   grid.style.gap = GAP + 'px';
   grid.style.width = totalW + 'px';
   grid.style.height = totalH + 'px';
   grid.innerHTML = '';
 
-  const total = COLS * ROWS;
+  const total = BASE_COLS * BASE_ROWS;
   for (let i = 0; i < total; i++) {
     const item = galleryItems[i % galleryItems.length];
     const cell = document.createElement('div');
     cell.className = 'gallery-cell';
-    cell.style.width = CELL + 'px';
-    cell.style.height = CELL + 'px';
+    cell.style.width = baseCellW + 'px';
+    cell.style.height = baseCellW + 'px';
     const img = document.createElement('img');
     img.src = item.img;
     img.alt = item.title;
-    img.style.borderRadius = '8px';
+    img.style.borderRadius = Math.max(3, baseCellW * 0.08) + 'px';
     img.style.padding = '1px';
     cell.appendChild(img);
-    cell.addEventListener('click', (e) => {
+    cell.addEventListener('click', () => {
       if (clickBlocked) return;
       openSheet(item.key, item);
     });
     grid.appendChild(cell);
   }
 
-  // center initially
-  gx = (vw - totalW) / 2;
-  gy = (vh - totalH) / 2;
-  gscale = 1;
-  applyTransform(false);
+  // Apply current zoom level scale, centered
+  snapToLevel(currentZoomIdx, false);
 }
 
-function applyTransform(animate) {
+function snapToLevel(idx, animated) {
+  currentZoomIdx = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, idx));
+  const s = scaleForLevel(currentZoomIdx);
+  const wrap = document.getElementById('gallery-wrap');
+  const grid = document.getElementById('gallery-grid');
+  const totalW = grid.offsetWidth * s;
+  const totalH = grid.offsetHeight * s;
+  // re-center on snap
+  gx = (galleryVW - totalW) / 2;
+  gy = Math.min(0, (galleryVH - totalH) / 2);
+  gscale = s;
+  targetScale = s;
+  applyTransform(animated);
+}
+
+function applyTransform(animated) {
   const canvas = document.getElementById('gallery-canvas');
-  canvas.style.transition = animate ? 'transform 0.25s cubic-bezier(0.32,0.72,0,1)' : 'none';
+  canvas.style.transition = animated ? 'transform 0.28s cubic-bezier(0.32,0.72,0,1)' : 'none';
   canvas.style.transform = `translate(${gx}px,${gy}px) scale(${gscale})`;
 }
 
@@ -852,13 +886,40 @@ function startInertia() {
   rafId = requestAnimationFrame(tick);
 }
 
-function zoomAt(pivotX, pivotY, factor) {
-  const newScale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, gscale * factor));
+// Map a continuous scale to nearest zoom level index
+function nearestZoomIdx(s) {
+  let best = 0, bestDist = Infinity;
+  for (let i = 0; i < ZOOM_LEVELS.length; i++) {
+    const d = Math.abs(scaleForLevel(i) - s);
+    if (d < bestDist) { bestDist = d; best = i; }
+  }
+  return best;
+}
+
+// Zoom continuously (during pinch/scroll), pivot in viewport coords
+function zoomContinuous(pivotX, pivotY, factor) {
+  const minS = scaleForLevel(ZOOM_LEVELS.length - 1) * 0.85;
+  const maxS = scaleForLevel(0) * 1.15;
+  const newScale = Math.min(maxS, Math.max(minS, gscale * factor));
   const ratio = newScale / gscale;
   gx = pivotX - ratio * (pivotX - gx);
   gy = pivotY - ratio * (pivotY - gy);
   gscale = newScale;
   applyTransform(false);
+}
+
+// On pinch/scroll end: snap to nearest discrete level, keeping pivot
+function snapNearest(pivotX, pivotY) {
+  const idx = nearestZoomIdx(gscale);
+  const oldScale = gscale;
+  const newScale = scaleForLevel(idx);
+  const ratio = newScale / oldScale;
+  gx = pivotX - ratio * (pivotX - gx);
+  gy = pivotY - ratio * (pivotY - gy);
+  gscale = newScale;
+  currentZoomIdx = idx;
+  targetScale = newScale;
+  applyTransform(true);
 }
 
 function initGalleryInteraction() {
@@ -913,7 +974,9 @@ function initGalleryInteraction() {
     const pivotX = e.clientX - rect.left;
     const pivotY = e.clientY - rect.top;
     const factor = e.deltaY < 0 ? 1.10 : 0.91;
-    zoomAt(pivotX, pivotY, factor);
+    zoomContinuous(pivotX, pivotY, factor);
+    clearTimeout(wrap._snapTimer);
+    wrap._snapTimer = setTimeout(() => snapNearest(pivotX, pivotY), 220);
   }, { passive: false });
 
   // ── TOUCH ──
@@ -941,10 +1004,8 @@ function initGalleryInteraction() {
       pinchStartDist = Math.sqrt(dx * dx + dy * dy);
       pinchStartScale = gscale;
       const rect = wrap.getBoundingClientRect();
-      pinchStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
-      pinchStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-      pinchStartGX = gx;
-      pinchStartGY = gy;
+      pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+      pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
       hideHint();
     }
   }, { passive: true });
@@ -970,22 +1031,23 @@ function initGalleryInteraction() {
       const dx = e.touches[1].clientX - e.touches[0].clientX;
       const dy = e.touches[1].clientY - e.touches[0].clientY;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const scaleFactor = dist / pinchStartDist;
-      const newScale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, pinchStartScale * scaleFactor));
-      const ratio = newScale / pinchStartScale;
-
-      gx = pinchStartX - ratio * (pinchStartX - pinchStartGX);
-      gy = pinchStartY - ratio * (pinchStartY - pinchStartGY);
-      gscale = newScale;
-      applyTransform(false);
+      const factor = dist / pinchStartDist;
+      pinchStartDist = dist;
+      zoomContinuous(pinchMidX, pinchMidY, factor);
     }
   }, { passive: false });
 
   wrap.addEventListener('touchend', (e) => {
     if (e.touches.length === 0) {
-      if (isDragging) { isDragging = false; startInertia(); }
-      pinchActive = false;
+      if (pinchActive) {
+        pinchActive = false;
+        snapNearest(pinchMidX, pinchMidY);
+      } else if (isDragging) {
+        isDragging = false;
+        startInertia();
+      }
     } else if (e.touches.length === 1 && pinchActive) {
+      snapNearest(pinchMidX, pinchMidY);
       pinchActive = false;
       isDragging = true;
       dragStartX = e.touches[0].clientX;
