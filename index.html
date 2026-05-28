@@ -116,77 +116,62 @@ html, body {
   color: var(--secondary);
   padding: 16px 20px 10px;
 }
+/* ── MASONRY CANVAS ── */
 .gallery-wrap {
   position: relative;
-  margin: 8px 0;
   overflow: hidden;
   touch-action: none;
   user-select: none;
+  cursor: grab;
+  /* fill the feed area completely */
+  height: calc(100vh - 280px);
+  min-height: 320px;
 }
-.gallery-viewport {
-  overflow: hidden;
-  width: 100%;
-}
-.gallery-grid {
-  display: grid;
-  gap: 0;
+.gallery-wrap.dragging { cursor: grabbing; }
+#gallery-canvas {
+  position: absolute;
+  top: 0; left: 0;
   transform-origin: 0 0;
   will-change: transform;
 }
-.gallery-cell {
-  position: relative;
+.masonry-col {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.masonry-tile {
+  border-radius: 12px;
   overflow: hidden;
+  flex-shrink: 0;
   cursor: pointer;
 }
-.gallery-cell img {
+.masonry-tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 12px;
-  transition: transform 0.1s;
-}
-.gallery-cell:active img { transform: scale(0.96); }
-.gallery-cell .cell-category {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  right: 4px;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: white;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-  text-transform: uppercase;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
+  user-select: none;
+  -webkit-user-drag: none;
 }
-.gallery-zoom-3 .cell-category { opacity: 1; }
-.gallery-zoom-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 8px 0 2px;
-}
-.zoom-btn {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: var(--white);
-  border: 0.5px solid rgba(86,92,106,0.2);
-  font-size: 18px;
-  color: var(--secondary);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-weight: 300;
-}
-.zoom-indicator {
+.gallery-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   font-size: 11px;
   color: var(--secondary);
-  font-weight: 500;
-  min-width: 50px;
-  text-align: center;
+  padding: 5px 14px;
+  border-radius: 20px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 5;
+  transition: opacity 0.4s;
 }
 .overlay {
   position: fixed;
@@ -404,14 +389,8 @@ html, body {
     <div class="page active" id="page-discover">
       <div class="section-label">Your moodboard</div>
       <div class="gallery-wrap" id="gallery-wrap">
-        <div class="gallery-viewport" id="gallery-viewport">
-          <div class="gallery-grid" id="gallery-grid"></div>
-        </div>
-        <div class="gallery-zoom-bar">
-          <div class="zoom-btn" id="zoom-out-btn">−</div>
-          <div class="zoom-indicator" id="zoom-indicator">3 × 5</div>
-          <div class="zoom-btn" id="zoom-in-btn">+</div>
-        </div>
+        <div id="gallery-canvas"></div>
+        <div class="gallery-hint" id="gallery-hint">Drag to explore · Pinch or scroll to zoom</div>
       </div>
     </div>
 
@@ -419,15 +398,15 @@ html, body {
     <div class="page" id="page-saved">
       <div class="section-label">Your moodboard</div>
       <div class="moodboard-grid">
-        <img src="dress1.jpeg" alt="dress">
-        <img src="shoes1.jpeg" alt="shoes">
-        <img src="bag1.jpeg" alt="bag">
-        <img src="painting1.jpeg" alt="painting">
-        <img src="vase1.jpeg" alt="vase">
-        <img src="top1.jpeg" alt="top">
-        <img src="necklace1.jpeg" alt="necklace">
-        <img src="jeans1.jpeg" alt="jeans">
-        <img src="makeup1.jpeg" alt="makeup">
+        <img src="images/dress1.jpeg" alt="dress">
+        <img src="images/shoes1.jpeg" alt="shoes">
+        <img src="images/bag1.jpeg" alt="bag">
+        <img src="images/painting1.jpeg" alt="painting">
+        <img src="images/vase1.jpeg" alt="vase">
+        <img src="images/top1.jpeg" alt="top">
+        <img src="images/necklace1.jpeg" alt="necklace">
+        <img src="images/jeans1.jpeg" alt="jeans">
+        <img src="images/makeup1.jpeg" alt="makeup">
       </div>
       <div class="section-label">Your aesthetic DNA</div>
       <div class="taste-section">
@@ -485,49 +464,49 @@ html, body {
       <div class="upload-cat-section">
         <div class="upload-cat-title">Fashion</div>
         <div class="upload-gallery">
-          <img src="dress1.jpeg" alt="dress1">
-          <img src="dress2.jpeg" alt="dress2">
-          <img src="top1.jpeg" alt="top1">
-          <img src="top2.jpeg" alt="top2">
+          <img src="images/dress1.jpeg" alt="dress1">
+          <img src="images/dress2.jpeg" alt="dress2">
+          <img src="images/top1.jpeg" alt="top1">
+          <img src="images/top2.jpeg" alt="top2">
         </div>
         <div class="upload-gallery">
-          <img src="shoes1.jpeg" alt="shoes1">
-          <img src="shoes2.jpeg" alt="shoes2">
-          <img src="shoes3.jpeg" alt="shoes3">
-          <img src="shoes4.jpeg" alt="shoes4">
+          <img src="images/shoes1.jpeg" alt="shoes1">
+          <img src="images/shoes2.jpeg" alt="shoes2">
+          <img src="images/shoes3.jpeg" alt="shoes3">
+          <img src="images/shoes4.jpeg" alt="shoes4">
         </div>
         <div class="upload-gallery">
-          <img src="bag1.jpeg" alt="bag1">
-          <img src="bag2.jpeg" alt="bag2">
-          <img src="jeans1.jpeg" alt="jeans1">
-          <img src="hat1.jpeg" alt="hat1">
+          <img src="images/bag1.jpeg" alt="bag1">
+          <img src="images/bag2.jpeg" alt="bag2">
+          <img src="images/jeans1.jpeg" alt="jeans1">
+          <img src="images/hat1.jpeg" alt="hat1">
         </div>
         <div class="upload-cat-title">Accessories</div>
         <div class="upload-gallery">
-          <img src="necklace1.jpeg" alt="necklace1">
-          <img src="ring1.jpeg" alt="ring1">
-          <img src="clip1.jpeg" alt="clip1">
-          <img src="clip2.jpeg" alt="clip2">
+          <img src="images/necklace1.jpeg" alt="necklace1">
+          <img src="images/ring1.jpeg" alt="ring1">
+          <img src="images/clip1.jpeg" alt="clip1">
+          <img src="images/clip2.jpeg" alt="clip2">
         </div>
         <div class="upload-cat-title">Beauty</div>
         <div class="upload-gallery">
-          <img src="makeup1.jpeg" alt="makeup1">
-          <img src="makeup2.jpeg" alt="makeup2">
-          <img src="makeup3.jpeg" alt="makeup3">
-          <img src="fan1.jpeg" alt="fan1">
+          <img src="images/makeup1.jpeg" alt="makeup1">
+          <img src="images/makeup2.jpeg" alt="makeup2">
+          <img src="images/makeup3.jpeg" alt="makeup3">
+          <img src="images/fan1.jpeg" alt="fan1">
         </div>
         <div class="upload-cat-title">Art & Home</div>
         <div class="upload-gallery">
-          <img src="painting1.jpeg" alt="painting1">
-          <img src="painting2.jpeg" alt="painting2">
-          <img src="vase1.jpeg" alt="vase1">
-          <img src="vase2.jpeg" alt="vase2">
+          <img src="images/painting1.jpeg" alt="painting1">
+          <img src="images/painting2.jpeg" alt="painting2">
+          <img src="images/vase1.jpeg" alt="vase1">
+          <img src="images/vase2.jpeg" alt="vase2">
         </div>
         <div class="upload-gallery">
-          <img src="vase3.jpeg" alt="vase3">
-          <img src="vase4.jpeg" alt="vase4">
-          <img src="lamp1.jpeg" alt="lamp1">
-          <img src="lingerie1.jpeg" alt="lingerie1">
+          <img src="images/vase3.jpeg" alt="vase3">
+          <img src="images/vase4.jpeg" alt="vase4">
+          <img src="images/lamp1.jpeg" alt="lamp1">
+          <img src="images/lingerie1.jpeg" alt="lingerie1">
         </div>
       </div>
 
@@ -580,7 +559,7 @@ html, body {
       <div class="section-label">See eligible offers for you</div>
       <div class="offers-scroll">
         <div class="offer-card" onclick="openSheet('dress1')">
-          <img src="dress1.jpeg" alt="dress">
+          <img src="images/dress1.jpeg" alt="dress">
           <div class="offer-card-body">
             <div class="offer-brand">Rouje Paris</div>
             <div class="offer-title">Linen Wrap Dress</div>
@@ -588,7 +567,7 @@ html, body {
           </div>
         </div>
         <div class="offer-card" onclick="openSheet('bag1')">
-          <img src="bag1.jpeg" alt="bag">
+          <img src="images/bag1.jpeg" alt="bag">
           <div class="offer-card-body">
             <div class="offer-brand">Sandro</div>
             <div class="offer-title">Leather Bag</div>
@@ -596,7 +575,7 @@ html, body {
           </div>
         </div>
         <div class="offer-card" onclick="openSheet('shoes1')">
-          <img src="shoes1.jpeg" alt="shoes">
+          <img src="images/shoes1.jpeg" alt="shoes">
           <div class="offer-card-body">
             <div class="offer-brand">Veja</div>
             <div class="offer-title">Minimalist Shoes</div>
@@ -604,7 +583,7 @@ html, body {
           </div>
         </div>
         <div class="offer-card" onclick="openSheet('painting1')">
-          <img src="painting1.jpeg" alt="painting">
+          <img src="images/painting1.jpeg" alt="painting">
           <div class="offer-card-body">
             <div class="offer-brand">Galerie Joseph</div>
             <div class="offer-title">Original Painting</div>
@@ -612,7 +591,7 @@ html, body {
           </div>
         </div>
         <div class="offer-card" onclick="openSheet('vase1')">
-          <img src="vase1.jpeg" alt="vase">
+          <img src="images/vase1.jpeg" alt="vase">
           <div class="offer-card-body">
             <div class="offer-brand">Merci Paris</div>
             <div class="offer-title">Ceramic Vase</div>
@@ -688,38 +667,38 @@ html, body {
 <script>
 // ── YOUR IMAGES mapped to gallery items ──
 const galleryItems = [
-  { img:'dress1.jpeg',    key:'dress1',    category:'Fashion',    title:'Wrap Dress',        brand:'Rouje Paris',     match:'95%' },
-  { img:'dress2.jpeg',    key:'dress2',    category:'Fashion',    title:'Summer Dress',      brand:'Sandro',          match:'91%' },
-  { img:'dress4.jpeg',    key:'dress4',    category:'Fashion',    title:'Evening Dress',     brand:'Maje',            match:'88%' },
-  { img:'top1.jpeg',      key:'top1',      category:'Fashion',    title:'Linen Top',         brand:'A.P.C.',          match:'93%' },
-  { img:'top2.jpeg',      key:'top2',      category:'Fashion',    title:'Silk Top',          brand:'Jacquemus',       match:'90%' },
-  { img:'top3.jpeg',      key:'top3',      category:'Fashion',    title:'Knit Top',          brand:'Isabel Marant',   match:'87%' },
-  { img:'jeans1.jpeg',    key:'jeans1',    category:'Fashion',    title:'Wide Leg Jeans',    brand:'Totême',          match:'89%' },
-  { img:'shoes1.jpeg',    key:'shoes1',    category:'Fashion',    title:'Leather Loafers',   brand:'Veja',            match:'94%' },
-  { img:'shoes2.jpeg',    key:'shoes2',    category:'Fashion',    title:'White Sneakers',    brand:'Veja',            match:'92%' },
-  { img:'shoes3.jpeg',    key:'shoes3',    category:'Fashion',    title:'Strappy Sandals',   brand:'Sézane',          match:'88%' },
-  { img:'shoes4.jpeg',    key:'shoes4',    category:'Fashion',    title:'Block Heel Mules',  brand:'Rouje Paris',     match:'86%' },
-  { img:'shoes5.jpeg',    key:'shoes5',    category:'Fashion',    title:'Ankle Boots',       brand:'Maje',            match:'84%' },
-  { img:'shoes6.jpeg',    key:'shoes6',    category:'Fashion',    title:'Ballet Flats',      brand:'Repetto',         match:'91%' },
-  { img:'bag1.jpeg',      key:'bag1',      category:'Fashion',    title:'Leather Tote',      brand:'Sandro',          match:'93%' },
-  { img:'bag2.jpeg',      key:'bag2',      category:'Fashion',    title:'Mini Shoulder Bag', brand:'A.P.C.',          match:'89%' },
-  { img:'hat1.jpeg',      key:'hat1',      category:'Fashion',    title:'Woven Hat',         brand:'Jacquemus',       match:'85%' },
-  { img:'necklace1.jpeg', key:'necklace1', category:'Accessories','title':'Gold Necklace',   brand:'Gas Bijoux',      match:'90%' },
-  { img:'ring1.jpeg',     key:'ring1',     category:'Accessories','title':'Sculptural Ring', brand:'Dinosaur Designs',match:'87%' },
-  { img:'clip1.jpeg',     key:'clip1',     category:'Accessories','title':'Hair Clip',       brand:'Lelet NY',        match:'83%' },
-  { img:'clip2.jpeg',     key:'clip2',     category:'Accessories','title':'Pearl Clip',      brand:'Jennifer Behr',   match:'81%' },
-  { img:'makeup1.jpeg',   key:'makeup1',   category:'Beauty',     title:'Foundation',        brand:'ILIA Beauty',     match:'88%' },
-  { img:'makeup2.jpeg',   key:'makeup2',   category:'Beauty',     title:'Lip Colour',        brand:'Rare Beauty',     match:'86%' },
-  { img:'makeup3.jpeg',   key:'makeup3',   category:'Beauty',     title:'Eye Palette',       brand:'Charlotte Tilbury',match:'84%'},
-  { img:'fan1.jpeg',      key:'fan1',      category:'Beauty',     title:'Face Fan',          brand:'Aesop',           match:'79%' },
-  { img:'painting1.jpeg', key:'painting1', category:'Art',        title:'Oil Painting',      brand:'Galerie Joseph',  match:'92%' },
-  { img:'painting2.jpeg', key:'painting2', category:'Art',        title:'Abstract Work',     brand:'Galerie Perrotin',match:'89%' },
-  { img:'vase1.jpeg',     key:'vase1',     category:'Home',       title:'Ceramic Vase',      brand:'Merci Paris',     match:'94%' },
-  { img:'vase2.jpeg',     key:'vase2',     category:'Home',       title:'Stoneware Vase',    brand:'Maison Balzac',   match:'91%' },
-  { img:'vase3.jpeg',     key:'vase3',     category:'Home',       title:'Terracotta Vase',   brand:'Smallable',       match:'88%' },
-  { img:'vase4.jpeg',     key:'vase4',     category:'Home',       title:'Sculptural Vase',   brand:'HAY',             match:'85%' },
-  { img:'lamp1.jpeg',     key:'lamp1',     category:'Home',       title:'Arc Floor Lamp',    brand:'Flos',            match:'87%' },
-  { img:'lingerie1.jpeg', key:'lingerie1', category:'Fashion',    title:'Silk Slip Set',     brand:'Eres',            match:'82%' },
+  { img:'images/dress1.jpeg',    key:'dress1',    category:'Fashion',    title:'Wrap Dress',        brand:'Rouje Paris',     match:'95%' },
+  { img:'images/dress2.jpeg',    key:'dress2',    category:'Fashion',    title:'Summer Dress',      brand:'Sandro',          match:'91%' },
+  { img:'images/dress4.jpeg',    key:'dress4',    category:'Fashion',    title:'Evening Dress',     brand:'Maje',            match:'88%' },
+  { img:'images/top1.jpeg',      key:'top1',      category:'Fashion',    title:'Linen Top',         brand:'A.P.C.',          match:'93%' },
+  { img:'images/top2.jpeg',      key:'top2',      category:'Fashion',    title:'Silk Top',          brand:'Jacquemus',       match:'90%' },
+  { img:'images/top3.jpeg',      key:'top3',      category:'Fashion',    title:'Knit Top',          brand:'Isabel Marant',   match:'87%' },
+  { img:'images/jeans1.jpeg',    key:'jeans1',    category:'Fashion',    title:'Wide Leg Jeans',    brand:'Totême',          match:'89%' },
+  { img:'images/shoes1.jpeg',    key:'shoes1',    category:'Fashion',    title:'Leather Loafers',   brand:'Veja',            match:'94%' },
+  { img:'images/shoes2.jpeg',    key:'shoes2',    category:'Fashion',    title:'White Sneakers',    brand:'Veja',            match:'92%' },
+  { img:'images/shoes3.jpeg',    key:'shoes3',    category:'Fashion',    title:'Strappy Sandals',   brand:'Sézane',          match:'88%' },
+  { img:'images/shoes4.jpeg',    key:'shoes4',    category:'Fashion',    title:'Block Heel Mules',  brand:'Rouje Paris',     match:'86%' },
+  { img:'images/shoes5.jpeg',    key:'shoes5',    category:'Fashion',    title:'Ankle Boots',       brand:'Maje',            match:'84%' },
+  { img:'images/shoes6.jpeg',    key:'shoes6',    category:'Fashion',    title:'Ballet Flats',      brand:'Repetto',         match:'91%' },
+  { img:'images/bag1.jpeg',      key:'bag1',      category:'Fashion',    title:'Leather Tote',      brand:'Sandro',          match:'93%' },
+  { img:'images/bag2.jpeg',      key:'bag2',      category:'Fashion',    title:'Mini Shoulder Bag', brand:'A.P.C.',          match:'89%' },
+  { img:'images/hat1.jpeg',      key:'hat1',      category:'Fashion',    title:'Woven Hat',         brand:'Jacquemus',       match:'85%' },
+  { img:'images/necklace1.jpeg', key:'necklace1', category:'Accessories','title':'Gold Necklace',   brand:'Gas Bijoux',      match:'90%' },
+  { img:'images/ring1.jpeg',     key:'ring1',     category:'Accessories','title':'Sculptural Ring', brand:'Dinosaur Designs',match:'87%' },
+  { img:'images/clip1.jpeg',     key:'clip1',     category:'Accessories','title':'Hair Clip',       brand:'Lelet NY',        match:'83%' },
+  { img:'images/clip2.jpeg',     key:'clip2',     category:'Accessories','title':'Pearl Clip',      brand:'Jennifer Behr',   match:'81%' },
+  { img:'images/makeup1.jpeg',   key:'makeup1',   category:'Beauty',     title:'Foundation',        brand:'ILIA Beauty',     match:'88%' },
+  { img:'images/makeup2.jpeg',   key:'makeup2',   category:'Beauty',     title:'Lip Colour',        brand:'Rare Beauty',     match:'86%' },
+  { img:'images/makeup3.jpeg',   key:'makeup3',   category:'Beauty',     title:'Eye Palette',       brand:'Charlotte Tilbury',match:'84%'},
+  { img:'images/fan1.jpeg',      key:'fan1',      category:'Beauty',     title:'Face Fan',          brand:'Aesop',           match:'79%' },
+  { img:'images/painting1.jpeg', key:'painting1', category:'Art',        title:'Oil Painting',      brand:'Galerie Joseph',  match:'92%' },
+  { img:'images/painting2.jpeg', key:'painting2', category:'Art',        title:'Abstract Work',     brand:'Galerie Perrotin',match:'89%' },
+  { img:'images/vase1.jpeg',     key:'vase1',     category:'Home',       title:'Ceramic Vase',      brand:'Merci Paris',     match:'94%' },
+  { img:'images/vase2.jpeg',     key:'vase2',     category:'Home',       title:'Stoneware Vase',    brand:'Maison Balzac',   match:'91%' },
+  { img:'images/vase3.jpeg',     key:'vase3',     category:'Home',       title:'Terracotta Vase',   brand:'Smallable',       match:'88%' },
+  { img:'images/vase4.jpeg',     key:'vase4',     category:'Home',       title:'Sculptural Vase',   brand:'HAY',             match:'85%' },
+  { img:'images/lamp1.jpeg',     key:'lamp1',     category:'Home',       title:'Arc Floor Lamp',    brand:'Flos',            match:'87%' },
+  { img:'images/lingerie1.jpeg', key:'lingerie1', category:'Fashion',    title:'Silk Slip Set',     brand:'Eres',            match:'82%' },
 ];
 
 // ── SHEET DATA ──
@@ -764,76 +743,225 @@ let state = { uploaded: 0, discountsUnlocked: 0, discountsUsed: 0 };
 
 function canUseDiscount() { return state.discountsUnlocked > state.discountsUsed; }
 
-// ── GALLERY ──
-const ZOOM_LEVELS = [3, 5, 8, 12, 15];
-const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
-let currentZoom = 0;
-let panX = 0, panY = 0;
-let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
-let pinchStartDist = 0, pinchStartZoom = 0;
+// ── MASONRY CANVAS with inertia, pinch-zoom, spring ──
+const TILE_W = 160;
+const TILE_GAP = 8;
+const NUM_COLS = 4;
+const COL_OFFSETS = [0, 40, 20, 60]; // stagger per column for collage feel
+const TILE_HEIGHTS = [220, 260, 200, 240, 280, 220, 200, 260, 240, 220, 280, 200, 260, 240, 220, 200, 240, 260, 220, 280, 200, 260, 240, 220, 200, 280, 240, 220, 260, 200, 220, 260];
 
-function buildGallery() {
-  const grid = document.getElementById('gallery-grid');
-  const viewport = document.getElementById('gallery-viewport');
-  const cols = ZOOM_LEVELS[currentZoom];
-  const rows = ROWS_PER_LEVEL[currentZoom];
-  const vw = viewport.clientWidth || 390;
-  const cellSize = vw / cols;
-  grid.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
-  grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
-  grid.style.width = vw + 'px';
-  grid.style.height = (cellSize * rows) + 'px';
-  viewport.style.height = Math.min(cellSize * rows, window.innerHeight * 0.55) + 'px';
-  grid.innerHTML = '';
-  const total = cols * rows;
-  for (let i = 0; i < total; i++) {
-    const item = galleryItems[i % galleryItems.length];
-    const cell = document.createElement('div');
-    cell.className = 'gallery-cell';
-    cell.style.width = cellSize + 'px';
-    cell.style.height = cellSize + 'px';
-    const img = document.createElement('img');
-    img.src = item.img;
-    img.alt = item.title;
-    img.style.borderRadius = '10px';
-    img.style.padding = '1.5px';
-    const label = document.createElement('div');
-    label.className = 'cell-category';
-    if (cols <= 5) label.textContent = item.category;
-    cell.appendChild(img);
-    if (cols <= 5) cell.appendChild(label);
-    cell.addEventListener('click', () => openSheet(item.key, item));
-    grid.appendChild(cell);
+const SCALE_MIN = 0.3;
+const SCALE_MAX = 3;
+
+let tx = 0, ty = 0, scale = 1;
+let targetTx = 0, targetTy = 0, targetScale = 1;
+let velX = 0, velY = 0;
+let dragging = false;
+let lastPX = 0, lastPY = 0;
+let lastMoveTime = 0, lastMoveX = 0, lastMoveY = 0;
+let pinchDist0 = null, pinchTx0 = 0, pinchTy0 = 0, pinchScale0 = 1;
+let rafId = null;
+let hintHidden = false;
+let clickStartX = 0, clickStartY = 0;
+
+const canvas = document.getElementById('gallery-canvas');
+const wrap = document.getElementById('gallery-wrap');
+const hint = document.getElementById('gallery-hint');
+
+// Build masonry columns
+function buildMasonry() {
+  canvas.innerHTML = '';
+  const CANVAS_W = NUM_COLS * (TILE_W + TILE_GAP) + TILE_GAP;
+  canvas.style.width = CANVAS_W + 'px';
+
+  for (let c = 0; c < NUM_COLS; c++) {
+    const col = document.createElement('div');
+    col.className = 'masonry-col';
+    col.style.left = (c * (TILE_W + TILE_GAP) + TILE_GAP) + 'px';
+    col.style.width = TILE_W + 'px';
+    col.style.paddingTop = COL_OFFSETS[c] + 'px';
+
+    // fill each column with looped items
+    const itemsPerCol = 10;
+    for (let r = 0; r < itemsPerCol; r++) {
+      const idx = (c * itemsPerCol + r) % galleryItems.length;
+      const item = galleryItems[idx];
+      const h = TILE_HEIGHTS[(c * itemsPerCol + r) % TILE_HEIGHTS.length];
+
+      const tile = document.createElement('div');
+      tile.className = 'masonry-tile';
+      tile.style.width = TILE_W + 'px';
+      tile.style.height = h + 'px';
+
+      const img = document.createElement('img');
+      img.src = item.img;
+      img.alt = item.title;
+      img.loading = 'lazy';
+      tile.appendChild(img);
+
+      tile.addEventListener('click', (e) => {
+        // only open if it was a tap, not a drag
+        const dx = e.clientX - clickStartX, dy = e.clientY - clickStartY;
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) openSheet(item.key, item);
+      });
+      col.appendChild(tile);
+    }
+    canvas.appendChild(col);
   }
-  document.getElementById('zoom-indicator').textContent = `${cols} × ${rows}`;
-  clampPan(); applyPan();
+
+  // init position: center horizontally
+  const ww = wrap.clientWidth || 390;
+  const CANVAS_W2 = NUM_COLS * (TILE_W + TILE_GAP) + TILE_GAP;
+  tx = (ww - CANVAS_W2 * scale) / 2;
+  ty = 40;
+  targetTx = tx; targetTy = ty; targetScale = scale;
+  applyTransform();
 }
 
-function clampPan() {
-  const viewport = document.getElementById('gallery-viewport');
-  const grid = document.getElementById('gallery-grid');
-  const vw = viewport.clientWidth || 390;
-  const vh = viewport.clientHeight || 300;
-  const gw = grid.offsetWidth || vw;
-  const gh = grid.offsetHeight || 300;
-  panX = Math.max(Math.min(0, vw - gw), Math.min(0, panX));
-  panY = Math.max(Math.min(0, vh - gh), Math.min(0, panY));
+function applyTransform() {
+  canvas.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
 }
-function applyPan() { document.getElementById('gallery-grid').style.transform = `translate(${panX}px,${panY}px)`; }
 
-document.getElementById('zoom-out-btn').addEventListener('click', () => { if (currentZoom < ZOOM_LEVELS.length-1) { currentZoom++; panX=0; panY=0; buildGallery(); } });
-document.getElementById('zoom-in-btn').addEventListener('click', () => { if (currentZoom > 0) { currentZoom--; panX=0; panY=0; buildGallery(); } });
+// Spring tick
+function springTick() {
+  const STIFF = 0.18, DAMP = 0.72;
+  if (!dragging) {
+    velX = velX * DAMP + (targetTx - tx) * STIFF;
+    velY = velY * DAMP + (targetTy - ty) * STIFF;
+    tx += velX;
+    ty += velY;
+    const ds = (targetScale - scale) * 0.18;
+    scale += ds;
+    applyTransform();
+    const moving = Math.abs(velX) > 0.1 || Math.abs(velY) > 0.1 || Math.abs(ds) > 0.001;
+    if (moving) { rafId = requestAnimationFrame(springTick); return; }
+  }
+  rafId = null;
+}
 
-const vp = document.getElementById('gallery-viewport');
-vp.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) { pinchStartDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); pinchStartZoom = currentZoom; isDragging = false; }
-  else if (e.touches.length === 1) { isDragging=true; dragStartX=e.touches[0].clientX; dragStartY=e.touches[0].clientY; panStartX=panX; panStartY=panY; }
-}, { passive: true });
-vp.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) { e.preventDefault(); const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); let nz=Math.round(pinchStartZoom+(pinchStartDist/dist-1)*3); nz=Math.max(0,Math.min(ZOOM_LEVELS.length-1,nz)); if(nz!==currentZoom){currentZoom=nz;panX=0;panY=0;buildGallery();} }
-  else if (isDragging && e.touches.length===1) { panX=panStartX+(e.touches[0].clientX-dragStartX); panY=panStartY+(e.touches[0].clientY-dragStartY); clampPan(); applyPan(); }
+function scheduleSpring() {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(springTick);
+}
+
+function hideHint() {
+  if (!hintHidden) { hintHidden = true; hint.style.opacity = '0'; }
+}
+
+// ── MOUSE ──
+wrap.addEventListener('mousedown', e => {
+  e.preventDefault();
+  dragging = true;
+  wrap.classList.add('dragging');
+  lastPX = e.clientX; lastPY = e.clientY;
+  lastMoveX = e.clientX; lastMoveY = e.clientY;
+  lastMoveTime = Date.now();
+  velX = 0; velY = 0;
+  clickStartX = e.clientX; clickStartY = e.clientY;
+  if (rafId) cancelAnimationFrame(rafId);
+});
+
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - lastPX, dy = e.clientY - lastPY;
+  lastPX = e.clientX; lastPY = e.clientY;
+  const now = Date.now(), dt = now - lastMoveTime;
+  if (dt > 0) { velX = (e.clientX - lastMoveX) / dt * 16; velY = (e.clientY - lastMoveY) / dt * 16; }
+  lastMoveTime = now; lastMoveX = e.clientX; lastMoveY = e.clientY;
+  tx += dx; ty += dy;
+  targetTx = tx; targetTy = ty;
+  applyTransform();
+  hideHint();
+});
+
+window.addEventListener('mouseup', () => {
+  if (!dragging) return;
+  dragging = false;
+  wrap.classList.remove('dragging');
+  targetTx = tx + velX * 8;
+  targetTy = ty + velY * 8;
+  scheduleSpring();
+});
+
+// ── WHEEL zoom (centered on cursor) ──
+wrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = wrap.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  const delta = e.deltaY < 0 ? 1.08 : 0.93;
+  const newScale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, targetScale * delta));
+  const ratio = newScale / targetScale;
+  targetTx = cx - ratio * (cx - targetTx);
+  targetTy = cy - ratio * (cy - targetTy);
+  targetScale = newScale;
+  // apply immediately for responsiveness
+  tx = targetTx; ty = targetTy; scale = targetScale;
+  applyTransform();
+  hideHint();
 }, { passive: false });
-vp.addEventListener('touchend', () => { isDragging=false; }, { passive: true });
+
+// ── TOUCH ──
+wrap.addEventListener('touchstart', e => {
+  if (rafId) cancelAnimationFrame(rafId);
+  velX = 0; velY = 0;
+  if (e.touches.length === 1) {
+    dragging = true;
+    lastPX = e.touches[0].clientX; lastPY = e.touches[0].clientY;
+    lastMoveX = lastPX; lastMoveY = lastPY; lastMoveTime = Date.now();
+    pinchDist0 = null;
+    clickStartX = lastPX; clickStartY = lastPY;
+  } else if (e.touches.length === 2) {
+    dragging = false;
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    pinchDist0 = Math.hypot(dx, dy);
+    pinchTx0 = tx; pinchTy0 = ty; pinchScale0 = scale;
+  }
+  hideHint();
+}, { passive: true });
+
+wrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1 && dragging) {
+    const dx = e.touches[0].clientX - lastPX, dy = e.touches[0].clientY - lastPY;
+    const now = Date.now(), dt = now - lastMoveTime;
+    if (dt > 0) { velX = (e.touches[0].clientX - lastMoveX) / dt * 16; velY = (e.touches[0].clientY - lastMoveY) / dt * 16; }
+    lastMoveTime = now; lastMoveX = e.touches[0].clientX; lastMoveY = e.touches[0].clientY;
+    lastPX = e.touches[0].clientX; lastPY = e.touches[0].clientY;
+    tx += dx; ty += dy;
+    targetTx = tx; targetTy = ty;
+    applyTransform();
+  } else if (e.touches.length === 2 && pinchDist0 !== null) {
+    const rect = wrap.getBoundingClientRect();
+    const dx = e.touches[1].clientX - e.touches[0].clientX;
+    const dy = e.touches[1].clientY - e.touches[0].clientY;
+    const dist = Math.hypot(dx, dy);
+    const newScale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, pinchScale0 * dist / pinchDist0));
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+    const ratio = newScale / pinchScale0;
+    tx = midX - ratio * (midX - pinchTx0);
+    ty = midY - ratio * (midY - pinchTy0);
+    scale = newScale;
+    targetTx = tx; targetTy = ty; targetScale = scale;
+    applyTransform();
+  }
+}, { passive: false });
+
+wrap.addEventListener('touchend', e => {
+  if (e.touches.length === 0) {
+    dragging = false;
+    pinchDist0 = null;
+    targetTx = tx + velX * 8;
+    targetTy = ty + velY * 8;
+    scheduleSpring();
+  } else if (e.touches.length === 1) {
+    pinchDist0 = null;
+    dragging = true;
+    lastPX = e.touches[0].clientX; lastPY = e.touches[0].clientY;
+  }
+}, { passive: true });
 
 // ── SHEET ──
 function openSheet(key, item) {
@@ -911,7 +1039,10 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('nav-'+tab).classList.add('active');
-  document.getElementById('feed').scrollTop = 0;
+  const feed = document.getElementById('feed');
+  feed.scrollTop = 0;
+  // on discover, lock feed scroll so the canvas handles all touch
+  feed.style.overflowY = tab === 'discover' ? 'hidden' : 'auto';
 }
 
 function showToast(msg) {
@@ -920,8 +1051,10 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-buildGallery();
-window.addEventListener('resize', buildGallery);
+buildMasonry();
+window.addEventListener('resize', buildMasonry);
+// discover is the default tab — lock feed scroll
+document.getElementById('feed').style.overflowY = 'hidden';
 </script>
 </body>
 </html>
