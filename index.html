@@ -100,12 +100,14 @@ html, body {
 .earn-badge { background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
 .feed {
   flex: 1;
-  overflow: hidden;
-  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 .feed::-webkit-scrollbar { display: none; }
-.page { display: none; height: 100%; }
-.page.active { display: flex; flex-direction: column; }
+.page { display: none; padding-bottom: 16px; }
+.page.active { display: block; }
 .section-label {
   font-size: 10px;
   font-weight: 600;
@@ -369,13 +371,13 @@ html, body {
   <div class="banner" id="banner">
     <span class="banner-icon">💰</span>
     <span class="banner-text">Data dividend this week — <span>4 brands bid for your aesthetic</span></span>
-    <span class="banner-close" onclick="document.getElementById('banner').style.display='none'; setTimeout(resizeGallery, 50);">×</span>
+    <span class="banner-close" onclick="document.getElementById('banner').style.display='none'">×</span>
   </div>
 
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="logo" style="display:flex;align-items:center;gap:0;"><img src="logo.png" alt="K" style="height:108px;width:auto;display:block;margin-bottom:-36px;margin-top:-36px;"><span style="color:#565C6A;letter-spacing:-1px;">atch</span></div>
+        <div class="logo" style="display:flex;align-items:center;gap:8px;"><img src="logo.png" alt="Katch logo" style="height:32px;width:auto;display:block;"><span class="k-letter">K</span>atch</div>
         <div class="tagline">Discover the hidden</div>
       </div>
       <div class="header-avatar" onclick="switchTab('profile')">M</div>
@@ -387,9 +389,9 @@ html, body {
   <div class="feed" id="feed">
 
     <!-- ── DISCOVER ── -->
-    <div class="page active" id="page-discover" style="display:flex;flex-direction:column;height:100%;padding-bottom:0;">
-      <div class="section-label" style="flex-shrink:0;">Your moodboard</div>
-      <div class="gallery-wrap" id="gallery-wrap" style="flex:1;margin:0;">
+    <div class="page active" id="page-discover">
+      <div class="section-label">Your moodboard</div>
+      <div class="gallery-wrap" id="gallery-wrap">
         <div class="gallery-viewport" id="gallery-viewport">
           <div class="gallery-canvas" id="gallery-canvas">
             <div class="gallery-grid" id="gallery-grid"></div>
@@ -400,7 +402,7 @@ html, body {
     </div>
 
     <!-- ── SAVED ── -->
-    <div class="page" id="page-saved" style="overflow-y:auto;-webkit-overflow-scrolling:touch;">
+    <div class="page" id="page-saved">
       <div class="section-label">Your moodboard</div>
       <div class="moodboard-grid">
         <img src="dress1.jpeg" alt="dress">
@@ -429,7 +431,7 @@ html, body {
     </div>
 
     <!-- ── UPLOAD ── -->
-    <div class="page" id="page-upload" style="overflow-y:auto;-webkit-overflow-scrolling:touch;">
+    <div class="page" id="page-upload">
       <label class="upload-hero" for="file-input">
         <div class="upload-icon-wrap">
           <svg width="28" height="28" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -537,7 +539,7 @@ html, body {
     </div>
 
     <!-- ── PROFILE ── -->
-    <div class="page" id="page-profile" style="overflow-y:auto;-webkit-overflow-scrolling:touch;">
+    <div class="page" id="page-profile">
       <div class="profile-hero">
         <div class="profile-avatar">M</div>
         <div class="profile-info">
@@ -792,7 +794,7 @@ function buildGallery() {
   const grid = document.getElementById('gallery-grid');
 
   galleryVW = wrap.clientWidth || 390;
-  galleryVH = wrap.clientHeight || Math.round(window.innerHeight * 0.52);
+  galleryVH = Math.round(window.innerHeight * 0.52);
   viewport.style.height = galleryVH + 'px';
 
   const baseCellW = (galleryVW - (BASE_COLS - 1) * GAP) / BASE_COLS;
@@ -1139,16 +1141,6 @@ function showToast(msg) {
 
 buildGallery();
 initGalleryInteraction();
-
-function resizeGallery() {
-  const wrap = document.getElementById('gallery-wrap');
-  const viewport = document.getElementById('gallery-viewport');
-  if (!wrap || !viewport) return;
-  galleryVW = wrap.clientWidth || 390;
-  galleryVH = wrap.clientHeight || galleryVH;
-  viewport.style.height = galleryVH + 'px';
-}
-
 window.addEventListener('resize', buildGallery);
 </script>
 </body>
