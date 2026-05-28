@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
-
 :root {
   --primary: #CB0D63;
   --accent: #FF7776;
@@ -22,7 +21,6 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-
 html, body {
   height: 100%;
   overflow: hidden;
@@ -31,7 +29,6 @@ html, body {
   color: #1a1a1a;
   -webkit-font-smoothing: antialiased;
 }
-
 .app {
   position: fixed;
   inset: 0;
@@ -41,7 +38,6 @@ html, body {
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
 }
-
 .status-bar {
   height: 44px;
   display: flex;
@@ -52,8 +48,6 @@ html, body {
 }
 .status-bar .time { font-size: 15px; font-weight: 600; }
 .status-bar .icons { display: flex; gap: 6px; align-items: center; font-size: 13px; }
-
-/* ── BANNER NOTIFICATION ── */
 .banner {
   margin: 0 14px 6px;
   background: #1a1a1a;
@@ -70,7 +64,6 @@ html, body {
 .banner-text span { color: var(--accent); font-weight: 600; }
 .banner-close { color: rgba(255,255,255,0.6); font-size: 16px; cursor: pointer; padding: 2px; }
 @keyframes slideDown { from { opacity:0; transform: translateY(-8px); } to { opacity:1; transform: translateY(0); } }
-
 .header {
   padding: 4px 20px 14px;
   flex-shrink: 0;
@@ -88,7 +81,6 @@ html, body {
 .logo .k-letter { color: #CB0D63; }
 .tagline { font-size: 11px; color: var(--secondary); letter-spacing: 0.5px; }
 .header-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
-
 .upload-pill {
   display: flex;
   align-items: center;
@@ -106,7 +98,6 @@ html, body {
 .upload-pill-text .main { font-size: 13px; font-weight: 500; color: #1a1a1a; }
 .upload-pill-text .sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
 .earn-badge { background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
-
 .feed {
   flex: 1;
   overflow-y: auto;
@@ -115,10 +106,8 @@ html, body {
   overscroll-behavior: contain;
 }
 .feed::-webkit-scrollbar { display: none; }
-
 .page { display: none; padding-bottom: 16px; }
 .page.active { display: block; }
-
 .section-label {
   font-size: 10px;
   font-weight: 600;
@@ -127,8 +116,6 @@ html, body {
   color: var(--secondary);
   padding: 16px 20px 10px;
 }
-
-/* ── GALLERY (DISCOVER) ── */
 .gallery-wrap {
   position: relative;
   margin: 8px 0;
@@ -176,8 +163,6 @@ html, body {
   transition: opacity 0.2s;
 }
 .gallery-zoom-3 .cell-category { opacity: 1; }
-
-/* Zoom controls */
 .gallery-zoom-bar {
   display: flex;
   align-items: center;
@@ -203,8 +188,6 @@ html, body {
   min-width: 50px;
   text-align: center;
 }
-
-/* ── BOTTOM SHEET OVERLAY ── */
 .overlay {
   position: fixed;
   inset: 0;
@@ -239,47 +222,25 @@ html, body {
 .price-row .price { font-size: 26px; font-weight: 700; color: var(--primary); font-family: 'Barlow Condensed', sans-serif; }
 .price-row .original { font-size: 14px; color: var(--secondary); text-decoration: line-through; }
 .price-row .save-pill { font-size: 11px; background: #FFF0F6; color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-
-/* Match actions in sheet */
-.match-actions {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
+.match-actions { display: flex; gap: 12px; margin-bottom: 14px; }
 .match-btn-no {
-  flex: 1;
-  height: 44px;
-  border: 0.5px solid rgba(86,92,106,0.3);
-  border-radius: 14px;
-  background: transparent;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
-  font-family: inherit;
-  color: var(--secondary);
+  flex: 1; height: 44px; border: 0.5px solid rgba(86,92,106,0.3);
+  border-radius: 14px; background: transparent; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; font-family: inherit; color: var(--secondary);
 }
 .match-btn-no:active { background: #f5f5f5; }
 .match-btn-yes {
-  flex: 1;
-  height: 44px;
-  border: none;
-  border-radius: 14px;
-  background: var(--primary);
-  font-size: 22px;
-  cursor: pointer;
+  flex: 1; height: 44px; border: none; border-radius: 14px;
+  background: var(--primary); font-size: 22px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.15s;
-  font-family: inherit;
-  color: white;
+  transition: opacity 0.15s; font-family: inherit; color: white;
 }
 .match-btn-yes:active { opacity: 0.85; }
-
 .btn-buy {
   width: 100%; padding: 16px; border: none; border-radius: 16px;
   background: var(--primary); font-size: 16px; font-weight: 600;
-  color: white; cursor: pointer; font-family: inherit;
-  transition: opacity 0.15s;
+  color: white; cursor: pointer; font-family: inherit; transition: opacity 0.15s;
 }
 .btn-buy:active { opacity: 0.85; }
 .btn-close-sheet {
@@ -287,8 +248,23 @@ html, body {
   border-radius: 14px; background: transparent; font-size: 14px;
   color: var(--secondary); cursor: pointer; font-family: inherit; margin-top: 10px;
 }
-
-/* ── SAVED / MOODBOARD PAGE ── */
+/* discount lock */
+.locked-sheet-msg { background: #FFF0F6; border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 16px; border: 0.5px solid rgba(203,13,99,0.2); }
+.locked-sheet-msg .lock { font-size: 24px; margin-bottom: 6px; }
+.locked-sheet-msg p { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.locked-sheet-msg small { font-size: 12px; color: var(--secondary); line-height: 1.5; display: block; }
+/* discount counter */
+.discount-counter {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white); border-radius: 14px; padding: 9px 14px;
+  border: 0.5px solid rgba(203,13,99,0.25); margin-bottom: 10px;
+}
+.discount-counter .dc-left { flex: 1; }
+.discount-counter .dc-title { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+.discount-counter .dc-sub { font-size: 11px; color: var(--secondary); margin-top: 1px; }
+.progress-bar { height: 4px; background: rgba(203,13,99,0.12); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.4s ease; }
+.dc-badge { background: var(--primary); color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; white-space: nowrap; }
 .moodboard-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -299,17 +275,10 @@ html, body {
 }
 .moodboard-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; transition: opacity 0.15s; }
 .moodboard-grid img:active { opacity: 0.8; }
-
 .taste-section { padding: 0 20px 20px; }
 .taste-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
 .taste-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-.tag {
-  font-size: 12px; padding: 6px 13px; border-radius: 20px;
-  background: #FFF0F6; color: var(--primary);
-  border: 0.5px solid rgba(203,13,99,0.2); font-weight: 500;
-}
-
-/* ── UPLOAD PAGE ── */
+.tag { font-size: 12px; padding: 6px 13px; border-radius: 20px; background: #FFF0F6; color: var(--primary); border: 0.5px solid rgba(203,13,99,0.2); font-weight: 500; }
 .upload-hero {
   margin: 16px 16px 12px;
   border: 1.5px dashed rgba(203,13,99,0.35);
@@ -321,221 +290,85 @@ html, body {
   transition: background 0.15s;
 }
 .upload-hero:active { background: rgba(203,13,99,0.05); }
-.upload-icon-wrap {
-  width: 60px; height: 60px; border-radius: 20px;
-  background: #FFF0F6; display: flex; align-items: center;
-  justify-content: center; margin: 0 auto 14px;
-}
+.upload-icon-wrap { width: 60px; height: 60px; border-radius: 20px; background: #FFF0F6; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
 .upload-hero h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
 .upload-hero p { font-size: 13px; color: var(--secondary); line-height: 1.5; }
 .upload-hero input { display: none; }
-
-.info-card {
-  margin: 0 16px 12px;
-  background: var(--white);
-  border-radius: 18px;
-  padding: 16px;
-  border: 0.5px solid rgba(86,92,106,0.1);
-  box-shadow: var(--card-shadow);
-}
+.info-card { margin: 0 16px 12px; background: var(--white); border-radius: 18px; padding: 16px; border: 0.5px solid rgba(86,92,106,0.1); box-shadow: var(--card-shadow); }
 .info-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
 .info-card .step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
 .info-card .step:last-child { margin-bottom: 0; }
-.step-num {
-  width: 24px; height: 24px; border-radius: 8px; background: var(--primary);
-  color: white; font-size: 12px; font-weight: 700; display: flex;
-  align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
-}
+.step-num { width: 24px; height: 24px; border-radius: 8px; background: var(--primary); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 .step-text { font-size: 13px; color: var(--secondary); line-height: 1.4; }
 .step-text strong { color: #1a1a1a; font-weight: 600; }
-
-.data-card {
-  margin: 0 16px 12px;
-  background: #FFF0F6;
-  border-radius: 18px;
-  padding: 16px;
-  border: 0.5px solid rgba(203,13,99,0.15);
-}
+.data-card { margin: 0 16px 12px; background: #FFF0F6; border-radius: 18px; padding: 16px; border: 0.5px solid rgba(203,13,99,0.15); }
 .data-card h4 { font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 12px; }
 .data-stats { display: flex; gap: 0; }
 .data-stat { flex: 1; text-align: center; }
 .data-stat .num { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--primary); }
 .data-stat .lbl { font-size: 10px; color: var(--secondary); margin-top: 2px; }
 .data-divider { width: 0.5px; background: rgba(203,13,99,0.2); margin: 4px 0; }
-
-/* ── UPLOAD CATEGORIES SECTION ── */
-.upload-cats-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--secondary);
-  padding: 16px 20px 10px;
-}
+.rule-card { margin: 0 16px 12px; background: #1a1a1a; border-radius: 18px; padding: 18px; }
+.rule-card h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.rule-card p { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+.rule-card .rule-highlight { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: white; margin-top: 10px; }
+.upload-cats-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--secondary); padding: 16px 20px 10px; }
 .upload-cat-section { margin: 0 16px 16px; }
-.upload-cat-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 6px;
-}
-.upload-gallery {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3px;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-.upload-gallery img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  display: block;
-  border-radius: 0;
-}
+.upload-cat-title { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.upload-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
+.upload-gallery img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 .upload-gallery img:first-child { border-radius: 14px 0 0 14px; }
 .upload-gallery img:last-child { border-radius: 0 14px 14px 0; }
-
-/* ── PROFILE PAGE ── */
-.profile-hero {
-  padding: 20px 20px 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  border-bottom: 0.5px solid rgba(86,92,106,0.1);
-  margin-bottom: 4px;
-}
-.profile-avatar {
-  width: 64px; height: 64px; border-radius: 22px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 28px; font-weight: 700; color: white; flex-shrink: 0;
-}
+.profile-hero { padding: 20px 20px 16px; display: flex; align-items: center; gap: 16px; border-bottom: 0.5px solid rgba(86,92,106,0.1); margin-bottom: 4px; }
+.profile-avatar { width: 64px; height: 64px; border-radius: 22px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: white; flex-shrink: 0; }
 .profile-info h2 { font-size: 20px; font-weight: 600; }
 .profile-info p { font-size: 12px; color: var(--secondary); margin-top: 3px; }
 .profile-info .member { font-size: 11px; color: var(--secondary); margin-top: 4px; }
-
 .stats-row { display: flex; gap: 10px; padding: 12px 16px; }
-.stat-box {
-  flex: 1; background: var(--white); border-radius: 14px;
-  padding: 12px 10px; text-align: center;
-  border: 0.5px solid rgba(86,92,106,0.1); box-shadow: var(--card-shadow);
-}
+.stat-box { flex: 1; background: var(--white); border-radius: 14px; padding: 12px 10px; text-align: center; border: 0.5px solid rgba(86,92,106,0.1); box-shadow: var(--card-shadow); }
 .stat-box .num { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); }
 .stat-box .lbl { font-size: 10px; color: var(--secondary); margin-top: 2px; }
-
-.settings-card {
-  margin: 0 16px 12px;
-  background: var(--white);
-  border-radius: 18px;
-  overflow: hidden;
-  border: 0.5px solid rgba(86,92,106,0.1);
-  box-shadow: var(--card-shadow);
-}
+.settings-card { margin: 0 16px 12px; background: var(--white); border-radius: 18px; overflow: hidden; border: 0.5px solid rgba(86,92,106,0.1); box-shadow: var(--card-shadow); }
 .settings-card h4 { font-size: 13px; font-weight: 600; padding: 14px 16px 10px; border-bottom: 0.5px solid rgba(86,92,106,0.1); }
-.setting-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 13px 16px; border-bottom: 0.5px solid rgba(86,92,106,0.07);
-}
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 0.5px solid rgba(86,92,106,0.07); }
 .setting-row:last-child { border-bottom: none; }
 .setting-label { font-size: 13px; color: #1a1a1a; }
 .setting-value { font-size: 13px; font-weight: 600; }
 .on { color: #1D9E75; }
 .del { color: var(--primary); cursor: pointer; }
-
-/* ── ELIGIBLE OFFERS SECTION ── */
-.offers-scroll {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 0 16px 8px;
-  -webkit-overflow-scrolling: touch;
-}
+.offers-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 8px; -webkit-overflow-scrolling: touch; }
 .offers-scroll::-webkit-scrollbar { display: none; }
-.offer-card {
-  flex: 0 0 200px;
-  background: var(--white);
-  border-radius: 18px;
-  overflow: hidden;
-  border: 0.5px solid rgba(203,13,99,0.15);
-  box-shadow: var(--card-shadow);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
+.offer-card { flex: 0 0 200px; background: var(--white); border-radius: 18px; overflow: hidden; border: 0.5px solid rgba(203,13,99,0.15); box-shadow: var(--card-shadow); cursor: pointer; transition: transform 0.15s; }
 .offer-card:active { transform: scale(0.97); }
 .offer-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
 .offer-card-body { padding: 10px 12px 12px; }
 .offer-card-body .offer-brand { font-size: 11px; color: var(--secondary); margin-bottom: 2px; }
 .offer-card-body .offer-title { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
-.offer-pill {
-  display: inline-block;
-  background: #FFF0F6;
-  color: var(--primary);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 10px;
-}
-
-/* ── BOTTOM NAV ── */
-.nav {
-  height: 62px;
-  background: var(--bg);
-  border-top: 0.5px solid rgba(86,92,106,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-shrink: 0;
-}
-.nav-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  background: none; border: none; cursor: pointer;
-  padding: 8px 16px; border-radius: 14px;
-  transition: background 0.15s;
-  font-family: inherit;
-}
+.offer-pill { display: inline-block; background: #FFF0F6; color: var(--primary); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 10px; }
+.nav { height: 62px; background: var(--bg); border-top: 0.5px solid rgba(86,92,106,0.2); display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 14px; transition: background 0.15s; font-family: inherit; }
 .nav-btn:active { background: rgba(203,13,99,0.06); }
-.nav-icon {
-  font-size: 22px; color: var(--secondary);
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-}
+.nav-icon { font-size: 22px; color: var(--secondary); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
 .nav-btn.active .nav-icon { color: var(--primary); }
 .nav-label { font-size: 10px; color: var(--secondary); font-weight: 500; }
 .nav-btn.active .nav-label { color: var(--primary); font-weight: 600; }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: #1a1a1a; color: white; font-size: 13px; font-weight: 500;
-  padding: 10px 20px; border-radius: 20px; opacity: 0;
-  transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 200;
-  white-space: nowrap;
-}
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: white; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 20px; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 200; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- Status Bar -->
   <div class="status-bar">
     <span class="time">9:41</span>
     <span class="icons">●●● 100%</span>
   </div>
 
-  <!-- Banner notification -->
   <div class="banner" id="banner">
     <span class="banner-icon">💰</span>
     <span class="banner-text">Data dividend this week — <span>4 brands bid for your aesthetic</span></span>
     <span class="banner-close" onclick="document.getElementById('banner').style.display='none'">×</span>
   </div>
 
-  <!-- Header -->
   <div class="header">
     <div class="header-top">
       <div>
@@ -544,24 +377,32 @@ html, body {
       </div>
       <div class="header-avatar" onclick="switchTab('profile')">M</div>
     </div>
+
+    <!-- Discount counter -->
+    <div class="discount-counter">
+      <div class="dc-left">
+        <div class="dc-title" id="dc-title">Next discount in <span id="dc-remaining">20</span> screenshots</div>
+        <div class="dc-sub">Upload screenshots to unlock discounts</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="dc-badge" id="dc-badge">0/20</div>
+    </div>
+
     <div class="upload-pill" onclick="switchTab('upload')">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" color="var(--primary)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       <div class="upload-pill-text">
         <div class="main">Drop your screenshots</div>
-        <div class="sub">Earn discounts from your taste</div>
+        <div class="sub" id="upload-sub">Earn discounts from your taste</div>
       </div>
       <span class="earn-badge">+ €</span>
     </div>
   </div>
 
-  <!-- Feed -->
   <div class="feed" id="feed">
 
-    <!-- DISCOVER PAGE -->
+    <!-- ── DISCOVER ── -->
     <div class="page active" id="page-discover">
       <div class="section-label">Your moodboard</div>
-
-      <!-- Gallery with zoom -->
       <div class="gallery-wrap" id="gallery-wrap">
         <div class="gallery-viewport" id="gallery-viewport">
           <div class="gallery-grid" id="gallery-grid"></div>
@@ -574,19 +415,19 @@ html, body {
       </div>
     </div>
 
-    <!-- SAVED PAGE -->
+    <!-- ── SAVED ── -->
     <div class="page" id="page-saved">
       <div class="section-label">Your moodboard</div>
       <div class="moodboard-grid">
-        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300&q=80" alt="s1">
-        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&q=80" alt="s2">
-        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80" alt="s3">
-        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=300&q=80" alt="s4">
-        <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=300&q=80" alt="s5">
-        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80" alt="s6">
-        <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=300&q=80" alt="s7">
-        <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&q=80" alt="s8">
-        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&q=80" alt="s9">
+        <img src="images/dress1.jpeg" alt="dress">
+        <img src="images/shoes1.jpeg" alt="shoes">
+        <img src="images/bag1.jpeg" alt="bag">
+        <img src="images/painting1.jpeg" alt="painting">
+        <img src="images/vase1.jpeg" alt="vase">
+        <img src="images/top1.jpeg" alt="top">
+        <img src="images/necklace1.jpeg" alt="necklace">
+        <img src="images/jeans1.jpeg" alt="jeans">
+        <img src="images/makeup1.jpeg" alt="makeup">
       </div>
       <div class="section-label">Your aesthetic DNA</div>
       <div class="taste-section">
@@ -603,7 +444,7 @@ html, body {
       </div>
     </div>
 
-    <!-- UPLOAD PAGE -->
+    <!-- ── UPLOAD ── -->
     <div class="page" id="page-upload">
       <label class="upload-hero" for="file-input">
         <div class="upload-icon-wrap">
@@ -614,49 +455,79 @@ html, body {
         <input type="file" id="file-input" accept="image/*" multiple onchange="handleUpload(this)">
       </label>
 
+      <div class="rule-card">
+        <h4>The discount rule</h4>
+        <p>Every screenshot you share teaches us your taste — and we pay you back.</p>
+        <div class="rule-highlight">1 discount every 20 screenshots</div>
+      </div>
+
       <div class="data-card">
         <h4>Your data this month</h4>
         <div class="data-stats">
           <div class="data-stat">
-            <div class="num">€8.40</div>
+            <div class="num" id="stat-earned">€0</div>
             <div class="lbl">earned in discounts</div>
           </div>
           <div class="data-divider"></div>
           <div class="data-stat">
-            <div class="num">23</div>
-            <div class="lbl">screenshots used</div>
+            <div class="num" id="stat-shots">0</div>
+            <div class="lbl">screenshots uploaded</div>
           </div>
           <div class="data-divider"></div>
           <div class="data-stat">
-            <div class="num">4</div>
-            <div class="lbl">matches made</div>
+            <div class="num" id="stat-discounts">0</div>
+            <div class="lbl">discounts unlocked</div>
           </div>
         </div>
       </div>
 
-      <!-- Uploaded screenshots by category -->
       <div class="upload-cats-label">Your uploaded screenshots</div>
-
       <div class="upload-cat-section">
         <div class="upload-cat-title">Fashion</div>
         <div class="upload-gallery">
-          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80" alt="">
+          <img src="images/dress1.jpeg" alt="dress1">
+          <img src="images/dress2.jpeg" alt="dress2">
+          <img src="images/top1.jpeg" alt="top1">
+          <img src="images/top2.jpeg" alt="top2">
         </div>
-        <div class="upload-cat-title">Art & Culture</div>
         <div class="upload-gallery">
-          <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&q=80" alt="">
+          <img src="images/shoes1.jpeg" alt="shoes1">
+          <img src="images/shoes2.jpeg" alt="shoes2">
+          <img src="images/shoes3.jpeg" alt="shoes3">
+          <img src="images/shoes4.jpeg" alt="shoes4">
         </div>
-        <div class="upload-cat-title">Food & Places</div>
         <div class="upload-gallery">
-          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=200&q=80" alt="">
-          <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=200&q=80" alt="">
+          <img src="images/bag1.jpeg" alt="bag1">
+          <img src="images/bag2.jpeg" alt="bag2">
+          <img src="images/jeans1.jpeg" alt="jeans1">
+          <img src="images/hat1.jpeg" alt="hat1">
+        </div>
+        <div class="upload-cat-title">Accessories</div>
+        <div class="upload-gallery">
+          <img src="images/necklace1.jpeg" alt="necklace1">
+          <img src="images/ring1.jpeg" alt="ring1">
+          <img src="images/clip1.jpeg" alt="clip1">
+          <img src="images/clip2.jpeg" alt="clip2">
+        </div>
+        <div class="upload-cat-title">Beauty</div>
+        <div class="upload-gallery">
+          <img src="images/makeup1.jpeg" alt="makeup1">
+          <img src="images/makeup2.jpeg" alt="makeup2">
+          <img src="images/makeup3.jpeg" alt="makeup3">
+          <img src="images/fan1.jpeg" alt="fan1">
+        </div>
+        <div class="upload-cat-title">Art & Home</div>
+        <div class="upload-gallery">
+          <img src="images/painting1.jpeg" alt="painting1">
+          <img src="images/painting2.jpeg" alt="painting2">
+          <img src="images/vase1.jpeg" alt="vase1">
+          <img src="images/vase2.jpeg" alt="vase2">
+        </div>
+        <div class="upload-gallery">
+          <img src="images/vase3.jpeg" alt="vase3">
+          <img src="images/vase4.jpeg" alt="vase4">
+          <img src="images/lamp1.jpeg" alt="lamp1">
+          <img src="images/lingerie1.jpeg" alt="lingerie1">
         </div>
       </div>
 
@@ -668,11 +539,11 @@ html, body {
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div class="step-text"><strong>We match</strong> your taste to brands that actually fit your aesthetic.</div>
+          <div class="step-text"><strong>Every 20 screenshots</strong> unlocks one discount on a matched product.</div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <div class="step-text"><strong>Brands pay</strong> to reach you — and you get 30% back as real discounts.</div>
+          <div class="step-text"><strong>Brands pay</strong> to reach you — and 30% comes back to you as a real discount.</div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
@@ -681,7 +552,7 @@ html, body {
       </div>
     </div>
 
-    <!-- PROFILE PAGE -->
+    <!-- ── PROFILE ── -->
     <div class="page" id="page-profile">
       <div class="profile-hero">
         <div class="profile-avatar">M</div>
@@ -691,53 +562,60 @@ html, body {
           <p class="member">Member since January 2025</p>
         </div>
       </div>
-
       <div class="stats-row">
         <div class="stat-box">
           <div class="num">€42</div>
           <div class="lbl">Total saved</div>
         </div>
         <div class="stat-box">
-          <div class="num">86</div>
+          <div class="num" id="profile-shots">0</div>
           <div class="lbl">Screenshots</div>
         </div>
         <div class="stat-box">
-          <div class="num">3</div>
-          <div class="lbl">Purchases</div>
+          <div class="num" id="profile-discounts">0</div>
+          <div class="lbl">Discounts used</div>
         </div>
       </div>
 
       <div class="section-label">See eligible offers for you</div>
       <div class="offers-scroll">
-        <div class="offer-card" onclick="openSheet('dress')">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" alt="">
+        <div class="offer-card" onclick="openSheet('dress1')">
+          <img src="images/dress1.jpeg" alt="dress">
           <div class="offer-card-body">
             <div class="offer-brand">Rouje Paris</div>
             <div class="offer-title">Linen Wrap Dress</div>
             <span class="offer-pill">−30% for you</span>
           </div>
         </div>
-        <div class="offer-card" onclick="openSheet('bag')">
-          <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80" alt="">
+        <div class="offer-card" onclick="openSheet('bag1')">
+          <img src="images/bag1.jpeg" alt="bag">
           <div class="offer-card-body">
             <div class="offer-brand">Sandro</div>
-            <div class="offer-title">Leather Tote</div>
+            <div class="offer-title">Leather Bag</div>
             <span class="offer-pill">−25% for you</span>
           </div>
         </div>
-        <div class="offer-card" onclick="openSheet('workshop')">
-          <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&q=80" alt="">
-          <div class="offer-card-body">
-            <div class="offer-brand">Atelier Laurette</div>
-            <div class="offer-title">Ceramics Workshop</div>
-            <span class="offer-pill">−31% for you</span>
-          </div>
-        </div>
-        <div class="offer-card" onclick="openSheet('sneaker')">
-          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="">
+        <div class="offer-card" onclick="openSheet('shoes1')">
+          <img src="images/shoes1.jpeg" alt="shoes">
           <div class="offer-card-body">
             <div class="offer-brand">Veja</div>
-            <div class="offer-title">Minimalist Sneaker</div>
+            <div class="offer-title">Minimalist Shoes</div>
+            <span class="offer-pill">−20% for you</span>
+          </div>
+        </div>
+        <div class="offer-card" onclick="openSheet('painting1')">
+          <img src="images/painting1.jpeg" alt="painting">
+          <div class="offer-card-body">
+            <div class="offer-brand">Galerie Joseph</div>
+            <div class="offer-title">Original Painting</div>
+            <span class="offer-pill">−15% for you</span>
+          </div>
+        </div>
+        <div class="offer-card" onclick="openSheet('vase1')">
+          <img src="images/vase1.jpeg" alt="vase">
+          <div class="offer-card-body">
+            <div class="offer-brand">Merci Paris</div>
+            <div class="offer-title">Ceramic Vase</div>
             <span class="offer-pill">−20% for you</span>
           </div>
         </div>
@@ -778,37 +656,26 @@ html, body {
 
   </div><!-- /feed -->
 
-  <!-- Bottom Nav -->
   <nav class="nav">
     <button class="nav-btn active" id="nav-discover" onclick="switchTab('discover')">
-      <div class="nav-icon">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      </div>
+      <div class="nav-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
       <span class="nav-label">Discover</span>
     </button>
     <button class="nav-btn" id="nav-saved" onclick="switchTab('saved')">
-      <div class="nav-icon">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      </div>
+      <div class="nav-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
       <span class="nav-label">Saved</span>
     </button>
     <button class="nav-btn" id="nav-upload" onclick="switchTab('upload')">
-      <div class="nav-icon">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-      </div>
+      <div class="nav-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
       <span class="nav-label">Upload</span>
     </button>
     <button class="nav-btn" id="nav-profile" onclick="switchTab('profile')">
-      <div class="nav-icon">
-        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
+      <div class="nav-icon"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
       <span class="nav-label">Profile</span>
     </button>
   </nav>
+</div>
 
-</div><!-- /app -->
-
-<!-- Bottom Sheet -->
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="sheet" id="sheet">
     <div class="sheet-handle"></div>
@@ -816,58 +683,108 @@ html, body {
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-/* ── GALLERY DATA ── */
+// ── YOUR IMAGES mapped to gallery items ──
 const galleryItems = [
-  { img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&q=80', key: 'coat', category: 'Fashion', title: 'Camel Structured Coat', brand: 'Maison Lemaire', match: '98%' },
-  { img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80', key: 'dress', category: 'Fashion', title: 'Linen Wrap Dress', brand: 'Rouje Paris', match: '95%' },
-  { img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80', key: 'bag', category: 'Fashion', title: 'Leather Tote', brand: 'Sandro', match: '93%' },
-  { img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80', key: 'sneaker', category: 'Fashion', title: 'Minimalist Sneaker', brand: 'Veja', match: '90%' },
-  { img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=500&q=80', key: 'jacket', category: 'Fashion', title: 'Overshirt Jacket', brand: 'A.P.C.', match: '88%' },
-  { img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&q=80', key: 'print', category: 'Art', title: 'Abstract Print', brand: 'Galerie Joseph', match: '91%' },
-  { img: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80', key: null, category: 'Film', title: 'Chungking Express', brand: 'Wong Kar-wai', match: '89%' },
-  { img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80', key: null, category: 'Music', title: 'Your Taste Playlist', brand: 'Built from saves', match: '87%' },
-  { img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=500&q=80', key: 'workshop', category: 'Events', title: 'Ceramics Workshop', brand: 'Atelier Laurette', match: '94%' },
-  { img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80', key: 'restaurant', category: 'Food', title: 'Septime', brand: 'Paris 11e', match: '91%' },
-  { img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&q=80', key: 'book', category: 'Books', title: 'Bresson on Bresson', brand: 'Phaidon Press', match: '88%' },
-  { img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&q=80', key: null, category: 'Food', title: 'Natural Wine Bar', brand: 'Paris 10e', match: '85%' },
-  { img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80', key: null, category: 'Art', title: 'Portrait Study', brand: 'Galerie Perrotin', match: '83%' },
-  { img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80', key: null, category: 'Fashion', title: 'White Linen Shirt', brand: 'Jacquemus', match: '86%' },
-  { img: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&q=80', key: null, category: 'Interiors', title: 'Warm Minimal Room', brand: 'Interior ref', match: '82%' },
+  { img:'images/dress1.jpeg',    key:'dress1',    category:'Fashion',    title:'Wrap Dress',        brand:'Rouje Paris',     match:'95%' },
+  { img:'images/dress2.jpeg',    key:'dress2',    category:'Fashion',    title:'Summer Dress',      brand:'Sandro',          match:'91%' },
+  { img:'images/dress4.jpeg',    key:'dress4',    category:'Fashion',    title:'Evening Dress',     brand:'Maje',            match:'88%' },
+  { img:'images/top1.jpeg',      key:'top1',      category:'Fashion',    title:'Linen Top',         brand:'A.P.C.',          match:'93%' },
+  { img:'images/top2.jpeg',      key:'top2',      category:'Fashion',    title:'Silk Top',          brand:'Jacquemus',       match:'90%' },
+  { img:'images/top3.jpeg',      key:'top3',      category:'Fashion',    title:'Knit Top',          brand:'Isabel Marant',   match:'87%' },
+  { img:'images/jeans1.jpeg',    key:'jeans1',    category:'Fashion',    title:'Wide Leg Jeans',    brand:'Totême',          match:'89%' },
+  { img:'images/shoes1.jpeg',    key:'shoes1',    category:'Fashion',    title:'Leather Loafers',   brand:'Veja',            match:'94%' },
+  { img:'images/shoes2.jpeg',    key:'shoes2',    category:'Fashion',    title:'White Sneakers',    brand:'Veja',            match:'92%' },
+  { img:'images/shoes3.jpeg',    key:'shoes3',    category:'Fashion',    title:'Strappy Sandals',   brand:'Sézane',          match:'88%' },
+  { img:'images/shoes4.jpeg',    key:'shoes4',    category:'Fashion',    title:'Block Heel Mules',  brand:'Rouje Paris',     match:'86%' },
+  { img:'images/shoes5.jpeg',    key:'shoes5',    category:'Fashion',    title:'Ankle Boots',       brand:'Maje',            match:'84%' },
+  { img:'images/shoes6.jpeg',    key:'shoes6',    category:'Fashion',    title:'Ballet Flats',      brand:'Repetto',         match:'91%' },
+  { img:'images/bag1.jpeg',      key:'bag1',      category:'Fashion',    title:'Leather Tote',      brand:'Sandro',          match:'93%' },
+  { img:'images/bag2.jpeg',      key:'bag2',      category:'Fashion',    title:'Mini Shoulder Bag', brand:'A.P.C.',          match:'89%' },
+  { img:'images/hat1.jpeg',      key:'hat1',      category:'Fashion',    title:'Woven Hat',         brand:'Jacquemus',       match:'85%' },
+  { img:'images/necklace1.jpeg', key:'necklace1', category:'Accessories','title':'Gold Necklace',   brand:'Gas Bijoux',      match:'90%' },
+  { img:'images/ring1.jpeg',     key:'ring1',     category:'Accessories','title':'Sculptural Ring', brand:'Dinosaur Designs',match:'87%' },
+  { img:'images/clip1.jpeg',     key:'clip1',     category:'Accessories','title':'Hair Clip',       brand:'Lelet NY',        match:'83%' },
+  { img:'images/clip2.jpeg',     key:'clip2',     category:'Accessories','title':'Pearl Clip',      brand:'Jennifer Behr',   match:'81%' },
+  { img:'images/makeup1.jpeg',   key:'makeup1',   category:'Beauty',     title:'Foundation',        brand:'ILIA Beauty',     match:'88%' },
+  { img:'images/makeup2.jpeg',   key:'makeup2',   category:'Beauty',     title:'Lip Colour',        brand:'Rare Beauty',     match:'86%' },
+  { img:'images/makeup3.jpeg',   key:'makeup3',   category:'Beauty',     title:'Eye Palette',       brand:'Charlotte Tilbury',match:'84%'},
+  { img:'images/fan1.jpeg',      key:'fan1',      category:'Beauty',     title:'Face Fan',          brand:'Aesop',           match:'79%' },
+  { img:'images/painting1.jpeg', key:'painting1', category:'Art',        title:'Oil Painting',      brand:'Galerie Joseph',  match:'92%' },
+  { img:'images/painting2.jpeg', key:'painting2', category:'Art',        title:'Abstract Work',     brand:'Galerie Perrotin',match:'89%' },
+  { img:'images/vase1.jpeg',     key:'vase1',     category:'Home',       title:'Ceramic Vase',      brand:'Merci Paris',     match:'94%' },
+  { img:'images/vase2.jpeg',     key:'vase2',     category:'Home',       title:'Stoneware Vase',    brand:'Maison Balzac',   match:'91%' },
+  { img:'images/vase3.jpeg',     key:'vase3',     category:'Home',       title:'Terracotta Vase',   brand:'Smallable',       match:'88%' },
+  { img:'images/vase4.jpeg',     key:'vase4',     category:'Home',       title:'Sculptural Vase',   brand:'HAY',             match:'85%' },
+  { img:'images/lamp1.jpeg',     key:'lamp1',     category:'Home',       title:'Arc Floor Lamp',    brand:'Flos',            match:'87%' },
+  { img:'images/lingerie1.jpeg', key:'lingerie1', category:'Fashion',    title:'Silk Slip Set',     brand:'Eres',            match:'82%' },
 ];
 
-/* ── GALLERY STATE ── */
-const ZOOM_LEVELS = [3, 5, 8, 12, 15];
-let currentZoom = 0; // index 0 = 3 cols (zoomed in), 4 = 15 cols (zoomed out)
-const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
+// ── SHEET DATA ──
+const sheetData = {
+  dress1:    { price:'€132', original:'€189', save:'Save €57',  desc:'Matched from 5 of your screenshots. Relaxed linen, wrap silhouette — your most saved aesthetic this season.' },
+  dress2:    { price:'€165', original:'€220', save:'Save €55',  desc:'Lightweight summer dress matched from your colour palette saves.' },
+  dress4:    { price:'€210', original:'€280', save:'Save €70',  desc:'Evening silhouette matched from 3 of your formal saves.' },
+  top1:      { price:'€89',  original:'€120', save:'Save €31',  desc:'Clean linen cut matched from your minimalist wardrobe references.' },
+  top2:      { price:'€145', original:'€195', save:'Save €50',  desc:'Fluid silk top — matched from your texture and drape saves.' },
+  top3:      { price:'€98',  original:'€130', save:'Save €32',  desc:'Soft knit matched from your cosy neutral aesthetic.' },
+  jeans1:    { price:'€175', original:'€235', save:'Save €60',  desc:'Wide-leg silhouette matched from 4 of your denim saves.' },
+  shoes1:    { price:'€96',  original:'€120', save:'Save €24',  desc:'Clean leather loafers — matched from 7 of your footwear saves.' },
+  shoes2:    { price:'€110', original:'€140', save:'Save €30',  desc:'White minimal sneaker matched from your everyday style saves.' },
+  shoes3:    { price:'€125', original:'€165', save:'Save €40',  desc:'Strappy sandal matched from your warm-weather footwear saves.' },
+  shoes4:    { price:'€138', original:'€180', save:'Save €42',  desc:'Block heel mule — matched from your elevated casual saves.' },
+  shoes5:    { price:'€155', original:'€200', save:'Save €45',  desc:'Ankle boots matched from your autumn wardrobe saves.' },
+  shoes6:    { price:'€85',  original:'€110', save:'Save €25',  desc:'Classic ballet flat matched from your Parisian-style saves.' },
+  bag1:      { price:'€184', original:'€245', save:'Save €61',  desc:'Structured leather tote matched from 4 of your bag saves.' },
+  bag2:      { price:'€145', original:'€195', save:'Save €50',  desc:'Mini shoulder bag matched from your compact bag references.' },
+  hat1:      { price:'€65',  original:'€85',  save:'Save €20',  desc:'Woven summer hat matched from your holiday aesthetic saves.' },
+  necklace1: { price:'€72',  original:'€95',  save:'Save €23',  desc:'Delicate gold necklace matched from your jewellery saves.' },
+  ring1:     { price:'€58',  original:'€75',  save:'Save €17',  desc:'Sculptural ring matched from your art and accessories saves.' },
+  clip1:     { price:'€28',  original:'€38',  save:'Save €10',  desc:'Hair clip matched from your accessories and styling saves.' },
+  clip2:     { price:'€32',  original:'€42',  save:'Save €10',  desc:'Pearl-detail clip matched from your elegant styling saves.' },
+  makeup1:   { price:'€38',  original:'€50',  save:'Save €12',  desc:'Foundation matched from your clean beauty saves.' },
+  makeup2:   { price:'€22',  original:'€28',  save:'Save €6',   desc:'Lip colour matched from your beauty and colour palette saves.' },
+  makeup3:   { price:'€55',  original:'€72',  save:'Save €17',  desc:'Eye palette matched from your makeup and colour saves.' },
+  fan1:      { price:'€18',  original:'€24',  save:'Save €6',   desc:'Face fan matched from your summer beauty saves.' },
+  painting1: { price:'€320', original:'€400', save:'Save €80',  desc:'Original oil painting matched from your art and colour saves.' },
+  painting2: { price:'€275', original:'€350', save:'Save €75',  desc:'Abstract work matched from your gallery and art saves.' },
+  vase1:     { price:'€65',  original:'€85',  save:'Save €20',  desc:'Ceramic vase matched from 12 of your home and ceramics saves.' },
+  vase2:     { price:'€78',  original:'€100', save:'Save €22',  desc:'Stoneware vase matched from your neutral home aesthetic.' },
+  vase3:     { price:'€55',  original:'€72',  save:'Save €17',  desc:'Terracotta vase matched from your warm-toned interior saves.' },
+  vase4:     { price:'€88',  original:'€115', save:'Save €27',  desc:'Sculptural vase matched from your design-forward home saves.' },
+  lamp1:     { price:'€245', original:'€320', save:'Save €75',  desc:'Arc floor lamp matched from your interior and lighting saves.' },
+  lingerie1: { price:'€95',  original:'€125', save:'Save €30',  desc:'Silk slip set matched from your elevated everyday saves.' },
+};
 
-// Pan state
+// ── DISCOUNT STATE ──
+const LIMIT = 20;
+let state = { uploaded: 0, discountsUnlocked: 0, discountsUsed: 0 };
+
+function canUseDiscount() { return state.discountsUnlocked > state.discountsUsed; }
+
+// ── GALLERY ──
+const ZOOM_LEVELS = [3, 5, 8, 12, 15];
+const ROWS_PER_LEVEL = [5, 8, 12, 16, 20];
+let currentZoom = 0;
 let panX = 0, panY = 0;
 let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
 let pinchStartDist = 0, pinchStartZoom = 0;
 
-function getCols() { return ZOOM_LEVELS[currentZoom]; }
-function getRows() { return ROWS_PER_LEVEL[currentZoom]; }
-
 function buildGallery() {
   const grid = document.getElementById('gallery-grid');
   const viewport = document.getElementById('gallery-viewport');
-  const cols = getCols();
-  const rows = getRows();
+  const cols = ZOOM_LEVELS[currentZoom];
+  const rows = ROWS_PER_LEVEL[currentZoom];
   const vw = viewport.clientWidth || 390;
   const cellSize = vw / cols;
-
   grid.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
   grid.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
   grid.style.width = vw + 'px';
   grid.style.height = (cellSize * rows) + 'px';
   viewport.style.height = Math.min(cellSize * rows, window.innerHeight * 0.55) + 'px';
-
   grid.innerHTML = '';
-
   const total = cols * rows;
   for (let i = 0; i < total; i++) {
     const item = galleryItems[i % galleryItems.length];
@@ -875,36 +792,21 @@ function buildGallery() {
     cell.className = 'gallery-cell';
     cell.style.width = cellSize + 'px';
     cell.style.height = cellSize + 'px';
-
     const img = document.createElement('img');
     img.src = item.img;
     img.alt = item.title;
     img.style.borderRadius = '10px';
     img.style.padding = '1.5px';
-
     const label = document.createElement('div');
     label.className = 'cell-category';
-    label.textContent = cols <= 5 ? item.category : '';
-
+    if (cols <= 5) label.textContent = item.category;
     cell.appendChild(img);
     if (cols <= 5) cell.appendChild(label);
-
-    cell.addEventListener('click', () => {
-      if (item.key) openSheetWithMatch(item.key, item);
-      else openSheetGeneric(item);
-    });
+    cell.addEventListener('click', () => openSheet(item.key, item));
     grid.appendChild(cell);
   }
-
-  updateZoomIndicator();
-  clampPan();
-  applyPan();
-}
-
-function updateZoomIndicator() {
-  const cols = getCols();
-  const rows = getRows();
   document.getElementById('zoom-indicator').textContent = `${cols} × ${rows}`;
+  clampPan(); applyPan();
 }
 
 function clampPan() {
@@ -914,113 +816,53 @@ function clampPan() {
   const vh = viewport.clientHeight || 300;
   const gw = grid.offsetWidth || vw;
   const gh = grid.offsetHeight || 300;
-  const maxX = 0, minX = Math.min(0, vw - gw);
-  const maxY = 0, minY = Math.min(0, vh - gh);
-  panX = Math.max(minX, Math.min(maxX, panX));
-  panY = Math.max(minY, Math.min(maxY, panY));
+  panX = Math.max(Math.min(0, vw - gw), Math.min(0, panX));
+  panY = Math.max(Math.min(0, vh - gh), Math.min(0, panY));
 }
+function applyPan() { document.getElementById('gallery-grid').style.transform = `translate(${panX}px,${panY}px)`; }
 
-function applyPan() {
-  document.getElementById('gallery-grid').style.transform = `translate(${panX}px, ${panY}px)`;
-}
+document.getElementById('zoom-out-btn').addEventListener('click', () => { if (currentZoom < ZOOM_LEVELS.length-1) { currentZoom++; panX=0; panY=0; buildGallery(); } });
+document.getElementById('zoom-in-btn').addEventListener('click', () => { if (currentZoom > 0) { currentZoom--; panX=0; panY=0; buildGallery(); } });
 
-document.getElementById('zoom-out-btn').addEventListener('click', () => {
-  if (currentZoom < ZOOM_LEVELS.length - 1) { currentZoom++; panX = 0; panY = 0; buildGallery(); }
-});
-document.getElementById('zoom-in-btn').addEventListener('click', () => {
-  if (currentZoom > 0) { currentZoom--; panX = 0; panY = 0; buildGallery(); }
-});
-
-/* Touch pan & pinch-zoom */
 const vp = document.getElementById('gallery-viewport');
-
 vp.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    pinchStartDist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
-    );
-    pinchStartZoom = currentZoom;
-    isDragging = false;
-  } else if (e.touches.length === 1) {
-    isDragging = true;
-    dragStartX = e.touches[0].clientX;
-    dragStartY = e.touches[0].clientY;
-    panStartX = panX;
-    panStartY = panY;
-  }
+  if (e.touches.length === 2) { pinchStartDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); pinchStartZoom = currentZoom; isDragging = false; }
+  else if (e.touches.length === 1) { isDragging=true; dragStartX=e.touches[0].clientX; dragStartY=e.touches[0].clientY; panStartX=panX; panStartY=panY; }
 }, { passive: true });
-
 vp.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const dist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
-    );
-    const ratio = pinchStartDist / dist;
-    let newZoom = Math.round(pinchStartZoom + (ratio - 1) * 3);
-    newZoom = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, newZoom));
-    if (newZoom !== currentZoom) { currentZoom = newZoom; panX = 0; panY = 0; buildGallery(); }
-  } else if (isDragging && e.touches.length === 1) {
-    panX = panStartX + (e.touches[0].clientX - dragStartX);
-    panY = panStartY + (e.touches[0].clientY - dragStartY);
-    clampPan();
-    applyPan();
-  }
+  if (e.touches.length === 2) { e.preventDefault(); const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); let nz=Math.round(pinchStartZoom+(pinchStartDist/dist-1)*3); nz=Math.max(0,Math.min(ZOOM_LEVELS.length-1,nz)); if(nz!==currentZoom){currentZoom=nz;panX=0;panY=0;buildGallery();} }
+  else if (isDragging && e.touches.length===1) { panX=panStartX+(e.touches[0].clientX-dragStartX); panY=panStartY+(e.touches[0].clientY-dragStartY); clampPan(); applyPan(); }
 }, { passive: false });
+vp.addEventListener('touchend', () => { isDragging=false; }, { passive: true });
 
-vp.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
-
-/* ── SHEET DATA ── */
-const sheetData = {
-  coat: { img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80', title: 'Camel Structured Coat', brand: 'Maison Lemaire', desc: 'Matched from 3 of your screenshots. You have been saving structured earth-tone outerwear for 6 weeks — this is the best available match right now.', price: '€294', original: '€420', save: 'Save €126', refs: '3 references', match: '98%' },
-  dress: { img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80', title: 'Linen Wrap Dress', brand: 'Rouje Paris', desc: 'Matched from 5 of your screenshots. Relaxed linen, wrap silhouette, natural tones — your most saved aesthetic this season.', price: '€132', original: '€189', save: 'Save €57', refs: '5 references', match: '95%' },
-  bag: { img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=700&q=80', title: 'Leather Tote', brand: 'Sandro', desc: 'Matched from 4 of your screenshots. Structured, minimal, exactly the silhouette you keep saving.', price: '€184', original: '€245', save: 'Save €61', refs: '4 references', match: '93%' },
-  sneaker: { img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80', title: 'Minimalist Sneaker', brand: 'Veja', desc: 'Clean white, ethical production, minimal branding. Matches 7 of your saved references.', price: '€96', original: '€120', save: 'Save €24', refs: '7 references', match: '90%' },
-  jacket: { img: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=700&q=80', title: 'Overshirt Jacket', brand: 'A.P.C.', desc: 'Structured, earthy, versatile. Appeared in 3 of your most recent uploads.', price: '€179', original: '€210', save: 'Save €31', refs: '3 references', match: '88%' },
-  print: { img: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=700&q=80', title: 'Abstract Print — No. 7', brand: 'Galerie Joseph · Paris 3e', desc: 'Limited edition. Matched from your art saves — same palette, same compositional energy.', price: '€81', original: '€95', save: 'Save €14', refs: '2 references', match: '91%' },
-  workshop: { img: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=700&q=80', title: 'Hand-building Ceramics Workshop', brand: 'Atelier Laurette · Paris 11e', desc: 'You have saved 12 ceramics references in the last month. This Saturday workshop is a 94% match with your aesthetic profile.', price: '€45', original: '€65', save: 'Save €20', refs: '12 references', match: '94%' },
-  restaurant: { img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80', title: 'Septime', brand: 'Restaurant · Paris 11e', desc: 'Natural wine, seasonal menu, warm lighting. Everything in your saved references points here.', price: 'Book a table', original: null, save: null, refs: '6 references', match: '91%' },
-  book: { img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=700&q=80', title: 'Bresson on Bresson', brand: 'Phaidon Press', desc: 'Interviews and photographs. Matched from your saved art and film references — same visual sensibility.', price: '€28', original: '€35', save: 'Save €7', refs: '4 references', match: '88%' }
-};
-
-function openSheetWithMatch(key, item) {
-  const d = sheetData[key] || { img: item.img, title: item.title, brand: item.brand, desc: 'Matched from your saves.', price: null, original: null, save: null, refs: '1 reference', match: item.match };
-  renderSheet(d, key);
-}
-
-function openSheetGeneric(item) {
-  renderSheet({ img: item.img, title: item.title, brand: item.brand, desc: 'Matched from your saves based on your aesthetic profile.', price: null, original: null, save: null, refs: '1 reference', match: item.match }, null);
-}
-
-function openSheet(key) {
+// ── SHEET ──
+function openSheet(key, item) {
   const d = sheetData[key];
-  if (!d) return;
-  renderSheet(d, key);
-}
+  const src = item ? item.img : (galleryItems.find(g=>g.key===key)||{}).img || '';
+  const title = item ? item.title : key;
+  const brand = item ? item.brand : '';
+  const match = item ? item.match : '';
+  const desc = d ? d.desc : 'Matched from your saves based on your aesthetic profile.';
 
-function renderSheet(d, key) {
-  const priceBlock = d.original
-    ? `<div class="price-row">
-        <span class="price">${d.price}</span>
-        <span class="original">${d.original}</span>
-        <span class="save-pill">${d.save}</span>
-       </div>
-       <button class="btn-buy" onclick="handleBuy('${key}')">Buy now · Discount applied</button>`
-    : d.price
-    ? `<button class="btn-buy" onclick="handleBuy('${key}')">${d.price}</button>`
-    : '';
+  let priceBlock = '';
+  if (d) {
+    if (canUseDiscount()) {
+      priceBlock = `<div class="price-row"><span class="price">${d.price}</span><span class="original">${d.original}</span><span class="save-pill">${d.save}</span></div><button class="btn-buy" onclick="handleBuy()">Buy now · Discount applied</button>`;
+    } else {
+      const needed = LIMIT - (state.uploaded % LIMIT);
+      priceBlock = `<div class="locked-sheet-msg"><div class="lock">🔒</div><p>Discount locked</p><small>Upload ${needed} more screenshot${needed!==1?'s':''} to unlock. 1 discount every ${LIMIT} screenshots.</small></div><div class="price-row"><span class="price">${d.original}</span></div><button class="btn-buy" style="background:var(--secondary);opacity:0.6" disabled>Discount not yet unlocked</button>`;
+    }
+  }
 
   document.getElementById('sheet-body').innerHTML = `
-    <img src="${d.img}" alt="${d.title}">
-    <h2>${d.title}</h2>
-    <p class="sheet-brand">${d.brand}</p>
-    <p class="sheet-desc">${d.desc}</p>
-    <p style="font-size:11px;color:var(--secondary);margin-bottom:12px;">Matched from <strong style="color:#1a1a1a">${d.refs || '—'}</strong> · <strong style="color:#1D9E75">${d.match || '—'} match</strong></p>
+    <img src="${src}" alt="${title}">
+    <h2>${title}</h2>
+    <p class="sheet-brand">${brand}</p>
+    <p class="sheet-desc">${desc}</p>
+    <p style="font-size:11px;color:var(--secondary);margin-bottom:12px;">Aesthetic match: <strong style="color:#1D9E75">${match}</strong></p>
     <div class="match-actions">
-      <button class="match-btn-no" onclick="closeSheet(); showToast('Got it — won\\'t show again')">✕</button>
-      <button class="match-btn-yes" onclick="${priceBlock ? '' : 'closeSheet(); showToast(\"Added to saves ✓\")'}">✓</button>
+      <button class="match-btn-no" onclick="closeSheet();showToast('Got it — won\\'t show again')">✕</button>
+      <button class="match-btn-yes" onclick="showToast('Added to saves ✓')">✓</button>
     </div>
     ${priceBlock}
     <button class="btn-close-sheet" onclick="closeSheet()">Close</button>
@@ -1028,41 +870,56 @@ function renderSheet(d, key) {
   document.getElementById('overlay').classList.add('show');
 }
 
-function closeSheet() {
-  document.getElementById('overlay').classList.remove('show');
+function closeSheet() { document.getElementById('overlay').classList.remove('show'); }
+function handleOverlayClick(e) { if (e.target===document.getElementById('overlay')) closeSheet(); }
+function handleBuy() { state.discountsUsed++; closeSheet(); updateUI(); showToast('Purchase started — discount applied ✓'); }
+
+// ── UPLOAD ──
+function handleUpload(input) {
+  if (!input.files || !input.files.length) return;
+  const count = input.files.length;
+  state.uploaded += count;
+  const newUnlocked = Math.floor(state.uploaded / LIMIT);
+  const justUnlocked = newUnlocked > state.discountsUnlocked;
+  state.discountsUnlocked = newUnlocked;
+  updateUI();
+  if (justUnlocked) showToast('🎉 Discount unlocked! Apply it to any match.');
+  else { const rem = LIMIT-(state.uploaded%LIMIT); showToast(`${count} screenshot${count>1?'s':''} uploaded · ${rem} more for next discount`); }
+  input.value = '';
 }
 
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('overlay')) closeSheet();
+function updateUI() {
+  const cycle = state.uploaded % LIMIT;
+  const remaining = (cycle===0 && state.uploaded>0) ? 0 : LIMIT-cycle;
+  const pct = (cycle===0 && state.uploaded>0) ? 100 : Math.round((cycle/LIMIT)*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('dc-badge').textContent = (cycle===0&&state.uploaded>0?20:cycle)+'/20';
+  document.getElementById('dc-remaining').textContent = remaining;
+  document.getElementById('upload-sub').textContent = state.uploaded+' uploaded · '+(remaining>0?remaining+' more for next discount':'Discount ready!');
+  if (canUseDiscount()) document.getElementById('dc-title').innerHTML = '🎉 Discount ready to use!';
+  else document.getElementById('dc-title').innerHTML = 'Next discount in <span id="dc-remaining">'+remaining+'</span> screenshots';
+  document.getElementById('stat-shots').textContent = state.uploaded;
+  document.getElementById('stat-discounts').textContent = state.discountsUnlocked;
+  document.getElementById('stat-earned').textContent = '€'+(state.discountsUsed*30);
+  document.getElementById('profile-shots').textContent = state.uploaded;
+  document.getElementById('profile-discounts').textContent = state.discountsUsed;
 }
 
-function handleBuy(key) {
-  closeSheet();
-  showToast('Purchase started — discount applied ✓');
-}
-
+// ── NAV ──
 function switchTab(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  document.getElementById('nav-' + tab).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
   document.getElementById('feed').scrollTop = 0;
 }
 
-function handleUpload(input) {
-  if (input.files && input.files.length > 0) {
-    showToast(`${input.files.length} screenshot${input.files.length > 1 ? 's' : ''} uploaded — analysing your taste ✦`);
-  }
-}
-
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// Init gallery
 buildGallery();
 window.addEventListener('resize', buildGallery);
 </script>
